@@ -4,6 +4,8 @@
 ```bush
 config --global user.name ""  
 config --global user.email ""
+
+git config core.ignorecase true //是否忽略大小写 (默认)
 ```
 
 ## Config-read
