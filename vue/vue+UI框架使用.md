@@ -14,8 +14,10 @@ babel-plugin-import           //vue已经直接支持
 
 1. 全局引入
 ```javascript
+import 'view-design/dist/styles/iview.css';//注意加在 引入APP之前,不然样式顺序反掉
+
 import ViewUI from 'view-design';
-import 'view-design/dist/styles/iview.css';
+
 ```
 ```javascript
 //对应.babelrc配置
@@ -35,9 +37,13 @@ import 'view-design/dist/styles/iview.css';
 2. 按需引入
 
 ```javascript
+import 'view-design/dist/styles/iview.css'; //任然必须
+
 import { Notivce } from 'view-design';
 Vue.use(Notivce);
-import 'view-design/dist/styles/iview.css'; //任然必须
+
+
+Vue.prototype.$Notice = Notivce  //可以选择注入，但是上一种已经注入了
 ```
 
 
