@@ -1,7 +1,7 @@
 # git
 
 ## 安装
-5
+
 ## 创建SSH
 
 > **.ssh** 文件夹 在 C:\Users\Administrator(默认)  

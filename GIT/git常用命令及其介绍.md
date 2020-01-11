@@ -32,8 +32,12 @@ git reflog			//command
 ## RM (删除)
 ```bush
 git checkout <file>
-rm
-$ git rm <file>
+
+
+//删除远程仓库的,不会影响到本地
+$ git rm  -r --cache <file>
+$ git commit -m "delete ..."
+# git push -u origin master
 ```
 
 
