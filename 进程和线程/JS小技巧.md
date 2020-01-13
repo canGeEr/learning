@@ -12,5 +12,7 @@ console.log(timeLong, timerEnd - timer);
 ```
 2. 
 ```javascript
-
+console.time('字符标识'),
+console.timeEnd('字符标识')
+//自动输出 '字符标识' + '时间'
 ```
