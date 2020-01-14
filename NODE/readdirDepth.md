@@ -6,22 +6,19 @@
 ```javascript
 const conf = { encoding: 'utf-8', withFileTypes: true };
 
-async function dirDepthTree(url) {
+function dirDepthTree(url) {
     const dirTree = {}
     dirTree.name = path.basename(path.resolve(url));
-    const dirs = await fs.readdirSync(url, conf);
-    if (dirs.length) {
-        dirTree.children = [];
-        for (let i = 0; i < dirs.length; i++) {
-            const item = dirs[i];
-            if (item.isDirectory()) {
-                dirTree.children[i] = await dirDepthTree(path.join(url, item.name));
-            }
-            else {
-                dirTree.children[i] = item.name;
-            }
+    const dirs = fs.readdirSync(url, conf);
+    dirTree.children = [];
+    dirs.forEach((dir, index) => {
+        if (dir.isDirectory()) {
+            dirTree.children[index] = dirDepthTree(path.join(url, dir.name));
         }
-    }
+        else {
+            dirTree.children[index] = dir.name;
+        }
+    })
     return dirTree;
 }
 ```
@@ -33,20 +30,15 @@ function proVisitTree(tree) {
         console.log(tree);
     else {
         console.log(tree.name);
-        //没有子目录的文件夹
-        if(tree.children) {
-            tree.children.forEach((item)=>{
-                dipthGetObj(item);
-            })
-        }
+        tree.children.forEach((item)=>{
+            proVisitTree(item);
+        })
     }
 }
 ```
 
 ## 调用测试
-dirDepthTree(url).then((dirTree) => {
-    proVisitTree(dirTree)
-})
+proVisitTree(dirDepthTree(url))
 
 ## 最后
 本来想好好看看nodejs的，突然玩起来了ansyc, 这里要注意ansyc也是一个promise对象,可以直接await
