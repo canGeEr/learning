@@ -16,9 +16,3 @@ const vm = new Vue({
 3. 在**beforeMount**函数执行之后,**vm.$mounted**开始绑定对应的dom元素, 找vm的(优先)**template**属性(render函数渲染到模板)，没有去找**el**（要在静态的html里面有盖悬挂点,生命周期
 4, 在mounted之前, 做出一些属性替换
 5. ...以后填补(暂时不重要)
-
-## 明天要做
-loading
-弹窗的消失延迟
-多看看别人的博客
-对vue的总结和更深入

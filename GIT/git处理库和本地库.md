@@ -6,7 +6,7 @@
 解决方法: 
 ```bush
 $ git fetch origin master //获取远程仓库并建立分支 origin
-$ git log -p origin..master/master //获取对比不同信息
+//$ git log -p master.. origin/master //获取对比不同信息
 $ git merge origin/master //合并分支
 
 //注意现在最全的版本在master(local)
