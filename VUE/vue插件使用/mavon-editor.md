@@ -63,42 +63,30 @@ export default {
 
 
 ## 处理事件
-在这里只说一下关于图片上传和删除：  
-为了完成这一功能必须先数据绑定一个 images 数组, 数组的元素是对象，对象记录的操作过的图片的路径和状态(是否删除)
+
+处理事件可以分发布和修改，两者在一些方面处理显得不同  
+注意: (即使一次点击选择多张，该方法也是一次一次的调用，所以不存在多文件上传)
+### 发布 
+组件基础: 
 ```javascript
-//添加 这里注意，即使一次点击选择多张，该方法也是一次一次的调用，所以不存在多文件上传
-$imgAdd(pos, $file) {
-  var formdata = new FormData();
-  formdata.append("image", $file);
-  Axios.fileUpload("api/article/saveImage", formdata)
-    .then((data) => {
-      this.images.push({
-        path: data.path,
-        legal: true
-      });
-      this.$refs.md.$img2Url(pos, "http://192.168.1.105:7001/" + data.path);
-    })
-    .catch(err => {
-      console.log(err);
-    });
-},
-$imgDel(file) {
-  //万一上传文件失败，侧无效,现在能确认是整数，其它另外,这里的filePath就是上面替换的路径
-  if (typeof file[0] !== "number") {
-    const path = file[0].replace(/http:\/\/192\.168\.1\.105\:7001\//, "");
-    const index =  this.images.findIndex((item, index)=>{
-        return item.path === path
-    });
-    this.$set(this.images[index], 'legal', false)
-  } else {
-    this.$Notice.warning({
-      title: "警告",
-      desc: "您的文件上传未成功，或者功能无效，导致删除无意义",
-      duration: 2.5
-    });
-  }
+{
+  images: [],
+  value: ''
 }
 ```
+1. 如果添加文件（图片），后端返回路径（到项目名），手动加上API路径，生成完整路径，调用方法，生成UI,
+2. 删除文件，获取图片路径名（上面拼接的即是），返回后端删除图片，(自动做的： 正则匹配替换 value的路径),删除images里的对应路径
+3. 假设点击发布: 正则匹配检查value中是否仍然含有 images中的路径字符，如果匹配不到那么触发 和 ‘2’情况下的删除图片反式
+4. 假设没有点击发布而是跳转或其他销毁页面，则触发 钩子函数destroy,将images传给后端删除全部
+
+### 修改
+
+//exitImages = []  接受本来的图片
+1. 修改大部分和发布相同，由于它本身就有自己的图片记录（已经上传）
+(
+  用户删除了已经上传的图片路径的字符,
+)
+因此，在点击修改时，也要正则匹配，是否删除图片
 
 
 ## 一些小细节，在处理这些问题的时候需要注意
