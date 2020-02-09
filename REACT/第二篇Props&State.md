@@ -36,14 +36,13 @@ class Component extends React.Component {
 **只读性**
 
 ## State
-1. 只有修改对应属性的值，才能引起更新DOM
+1. 只要setState就要更新，更新是对比原来的虚拟DOM，选择性的更新UI界面(显得更加的可控的)
 2. State 的更新可能是异步的
 ```javascript
 //以下情况会不会出现预期结果
 this.setState({
   name: 'wucan'
 })
-
 this.setState({
   name: this.state.name + '-zix'
 })
