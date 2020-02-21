@@ -70,7 +70,7 @@ export default {
 组件基础: 
 ```javascript
 {
-  images: [],
+  images: [], //默认这是要全部上传的
   value: ''
 }
 ```
