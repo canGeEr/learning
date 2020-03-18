@@ -37,9 +37,9 @@ document => HTMLDocument => Document => Node
 ## document的常用属性
 1. doctype  => 文档声明
 2. documentElement => html元素
-3. body => body 元素
+3. body => body 元素, head => head 元素
 4. URL => 地址栏信息
-4. ：write()、writeln()、open()和 close()。
+5. ：write()、writeln()、open()和 close()。
 
 ## Element类型
 1. 其具有tagName属性可以访问标签名
