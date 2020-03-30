@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div></div>
+    <div></div>
+    <div></div>
+    <script>
+const p1 = new Promise(function (resolve, reject) {
+    setTimeout(()=>{
+        throw new Error('a')
+    }, 3000)
+  
+})
+
+const p2 = new Promise(function (resolve, reject) {
+  setTimeout(() => {
+    console.log('p2已执行')
+    resolve(p1)
+  }, 1000)
+})
+
+p2
+  .then(result => console.log(result,'a'))
+  .catch(error => console.log(error))
+
+    </script>
+</body>
+
+</html>
