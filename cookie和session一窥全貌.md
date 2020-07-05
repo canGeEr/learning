@@ -34,5 +34,4 @@
 <img src="./IMAGES/session.png">
 
 3. 当浏览器第二次访问服务器时，Session服务自动根据SessionID识别用户，读取对应的session文件，此时程序操作的session时独立的（每个浏览器访问，服务器开辟一个独立的进程/线程/异步处理）
-
-4. 
+,用户代码层次获取的session就是当前读取的session文件，至此会话连接成功。
