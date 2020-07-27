@@ -39,11 +39,12 @@ alias: {
 备注: 根据个人喜好建立(在src下)文件夹以整理资源
 ### pages
 存放单页型组件
-### service
-存放axios文件配置
+### service / api
+把所有的数据接口导出为方法，以便使用
 ### mock
 模拟数据  *参考vue-mockjs使用文档*
 ### store
 状态管理
-### myplugin
+### utils
 一些杂乱的插件或组件的整理
+存放axios文件配置
