@@ -161,6 +161,4 @@ function Super() {
 function Sub() {
 
 }
-
-
 ```
