@@ -289,7 +289,7 @@ export default {
 }
 ```
 ## 函数式组件
-没有自身需要维持的数据的组件
+没有自身需要维持的数据的组件 => 这正是为什么叫函数式组件
 ```javascript
 //1. 
 <template functional></template>
@@ -298,8 +298,7 @@ Vue.component('FunctionComponent', {
   functional: '',
   rander(createElement, context) {
     const {props, children, slots, scopedSlots, data} = context;
-    //context 其实就相当于react的props，表现的真正的组件像函数传参一样，我个人认识
-    //这才是为什么叫函数式组件的原因
+    //context 其实就相当于react的props，表现的真正的组件像函数传参一样，
     
     //这种叫做透传
     return createElement('labelName', data, children)
