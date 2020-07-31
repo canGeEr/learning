@@ -296,7 +296,7 @@ export default {
 //2. 
 Vue.component('FunctionComponent', {
   functional: '',
-  rander(createElement, context) {
+  render(createElement, context) {
     const {props, children, slots, scopedSlots, data} = context;
     //context 其实就相当于react的props，表现的真正的组件像函数传参一样，
     
