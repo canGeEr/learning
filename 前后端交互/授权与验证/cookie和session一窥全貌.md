@@ -19,6 +19,7 @@
 <img src="./IMAGES/cookie.png">
 
 ### Cookie的几种登入方式
+> 几种方式都比较简单，就不做代码演示了
 1. 把登录信息如账号、密码等保存在Cookie中，并控制Cookie的有效期，下次访问时再验证Cookie中的登录信息即可。这是一种比较危险的选择，一般不把密码等重要信息保存到Cookie中
 2. 一种方案是把密码加密后保存到Cookie中，下次访问时解密并与数据库比较（可能伪造cookie登入)，还可以把登录的时间戳保存到Cookie与数据库中，到时只验证用户名与登录时间戳就可以了。
 3. 只在登录时查询一次数据库，以后访问验证登录信息时不再查询数据库。自定义密钥Key，
@@ -33,5 +34,26 @@
 2. 看下图以PHP为例
 <img src="./IMAGES/session.png">
 
-3. 当浏览器第二次访问服务器时，Session服务自动根据SessionID识别用户，读取对应的session文件，此时程序操作的session时独立的（每个浏览器访问，服务器开辟一个独立的进程/线程/异步处理）
-,用户代码层次获取的session就是当前读取的session文件，至此会话连接成功。
+3. 当浏览器第二次访问服务器时，Session服务自动根据SessionID（请求时会自动的带上Cookie这是关键）识别用户，读取对应的session文件，此时程序操作的session时独立的（每个浏览器访问，服务器开辟一个独立的进程/线程/异步处理）
+,用户代码层次获取的session就是当前读取的session文件，至此会话连接成功。因此，其实对于客户端来说，session是透明的（透明的就是看不见的意思，也不需要前端的同学关注set-cookie写回和携带cookie去请求，都是自动完成，当然一部分是交互的机制实现）。    
+
+4. 看个NodeJs（这是基于koa的EggJs框架）的例子就知道了：
+```javascript
+// 存储设置session
+const {ctx} = this    //session自动绑定到ctx上，所以获取
+ctx.session.user = sqlUser.username; //session 保存username 到session ，
+/*
+  注意，只有写到这个代码层次，才开启了session服务流程 （当然如果你要用session要进行一些配置），服务器已经生成sessionId，保存记录username，最后写入
+文件(一般是一个客户端对应一个session文件，以便提高访问速度)
+*/
+
+//当客户端再次访问服务器资源时
+const username = ctx.session.user //注意，客户端访问是，是带有Cookie的，服务器自动处理识别"EGG_KEY"（这是这个框架存储客户端cookie的sessionId的键）并访问对应的sission文件，至此
+//ctx.session已经存在数据供开发成员使用
+```
+
+> 你可以注意到，session依赖于cookie的识别，设置，携带。一旦客户端禁止Cookie，那这种方式将失效
+
+5. 如果客户端禁止Cookie，那服务器应该把SessionId手动返回给客户端，客户端请求时，再请求体或者参数携带SessionId，服务器再验证SessionId以读取对应的文件，获取当前客户端的对应session数据。
+
+> nodejs的session（各种版本的中间件）普遍没有暴露获取sessionid的方法，其它后端语言怎么样我不是特别清楚，如果懂求nodejs怎么获取大佬为萌新解答，谢谢哦。一般后端语言都可以自定义sessionId为其开启sesion。
