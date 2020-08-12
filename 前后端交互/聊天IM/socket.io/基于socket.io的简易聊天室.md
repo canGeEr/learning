@@ -1,27 +1,16 @@
-# 基于socket.io的简易聊天室
 > 聊天室这篇博客不讲解聊天系统（带数据库），只是简单的讲一下在线实时聊天室，但是它是一个聊天系统的基础。相信你很快就学会Socket.Io
 
+> 如果你希望更快的了解，直接git下面的代码链接，配合看
+[chat-room](https://gitee.com/cangeer/chat-room-demo)
 
-> 英文官网：    
-[Socket.Io](https://socket.io/) （导航栏的getStart或者demo学习）    
-中文文档（W3C)：    
-[Socket.Io中文文档](https://www.w3cschool.cn/socket/) （更推荐吧，当然也不是特别好）
-
-## 基本工作机制
-- **它会自动根据浏览器从WebSocket、AJAX长轮询、Iframe流等等各种方式中选择最佳的方式来实现网络实时应用**
-
-- WebSocket它是一个完整的 应用层协议，包含一套标准的 API 。，基于Tcp，Socket.Io是其上层的封装更加易用。从第一点也说明包含WebSocket
-
-- WebSocket API 是 HTML5 标准的一部分， **但这并不代表 WebSocket 一定要用在 HTML 中，或者只能在基于浏览器的应用程序中使用**。实际上，许多语言、框架和服务器都提供了 WebSocket 支持
-
-- **通讯技术IM一般都是基于P2P模式**（这句话可能不是特别严谨，理解意思就好），所以应该吧客户端js和WebSocket分开理解，js只是间接的调用WebSocket的一个接口层次。**你至少应该把WebSocket理解为一个进程**。
-
-- 当一个主机开启WebSocket进程服务，那么要连接另外的一个主机开启WebSocket进程服务，建立连接自然就可以通信了。通信自然就要有接口去 =》 发送 和 接受 ，由于一直是等待监听所以编写起来和DOM时间监听非常像。发送用emit，接受用on。拿自然也涉及到自定义事件
-
-- 一对一的建立连接只能两个人通信，如何进行多人通信呢。只需要再加一台服务器，帮助传达消息即可。（就好比，你传纸条都传给一个人（暂时叫代理人），由于纸条带有接受者名字，代理人会自动的传达给接受者（并且中间还可以做一些列的事情，比如存储）。
-
+## 流程
+1. 后端搭建服务器，安装socket.io服务依赖，通过代码挂载服务。
+2. 前端链接服务
+3. 前端实现监听和发送
+4. 服务端实现监听和发送
 
 ## 开始安装
+
 > 后端基于nodejs讲解，而且为了方便直接用express框架，只是为了更快，用原生的也可。
 接下来，在编写代码时，我会加上注释解释作用，希望你先看完 **基本工作机制**
 
@@ -34,14 +23,14 @@ npm install express -S //局部安装express框架
 
 2. 在根目录下（chat-room）新建一个index.js作为入口文件
 ```javascript
-var app = require('express')();
-var http = require('http').createServer(app);
+var express = require('express')();
+var server = require('http').createServer(express);
 
-app.get('/', (req, res) => {
+express.get('/', (req, res) => {
   res.send('<h1>Hello world</h1>');
 });
 
-http.listen(3000, () => {
+server.listen(3000, () => {
   console.log('listening on *:3000');
 });
 ```
@@ -84,12 +73,12 @@ npm install socket.io -S // 安装socket.io模块
 
 **index.js** 文件修改为
 ```javascript
-var app = require('express')();
-var http = require('http').createServer(app);
-var io = require('socket.io')(http);
+var express = require('express')();
+var server = require('http').createServer(express);
+var io = require('socket.io')(server);
 
 //挂载路线访问 localhost:3000/ 就能获取该文件
-app.get('/', (req, res) => {
+server.get('/', (req, res) => {
   //读取根目录下的index.html
   res.sendFile(__dirname + '/index.html');
 });
@@ -101,7 +90,7 @@ io.on('connection', (socket) => {
 });
 
 //挂载nodejs服务在3000端口，回调函数
-http.listen(3000, () => {
+server.listen(3000, () => {
   console.log('listening on *:3000');
 });
 ```
@@ -124,7 +113,7 @@ http.listen(3000, () => {
 ```bush
 node index.js
 ```
-注意，是客户端连接服务端，所以必须先开启服务端，等待连接，然后开启客户端（访问地址localhost:3000）才能建立连接，**必须有个先后顺序 => 服务端的socket.io开启的是探讨等待模式，而客户端只是一次性的请求连接**。注意打印输出，第一阶段就完成了。
+注意，是客户端连接服务端，所以必须先开启服务端，等待连接，然后开启客户端（访问地址localhost:3000）才能建立连接，**必须有个先后顺序 => 服务端的socket.io开启的是探讨等待模式，而客户端只是一次性的请求连接（后来发现，socket.io自动实现心跳机制。。。。，客户端一直尝试连接）**。注意打印输出，第一阶段就完成了。
 
 4. 为了深入了解需要做更多的事，让你体验到，他们到底是如何交互的   
 **在index.js对于io部分的代码进行修改，添加**
@@ -147,7 +136,8 @@ node index.js
 ```html
 <!-- 依然是JS部分 -->
 <script src="/socket.io/socket.io.js"></script>
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<!-- 请注意这里的jq链接，官网的可能加载失败，这个成功 -->
+<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
 <script>
   $(function () {
     var socket = io();
@@ -248,108 +238,67 @@ $(function () {
   });
 ```
 
-> 相信上面的代码已经让你对socket.io的机制有所了解下面，开始真正的多人聊天室开发案例（部分）
+## 心跳机制
+缘由：  
+想一下，虽然在客户端关闭页面的时候会自动的通知服务器emit，但是有些时候是不可预知的原因，比如断网，电脑直接死机等，
+但是无法自动通知后端，后端服务器如果仍然以为客户端socket存在的话，那么将浪费一个资源
 
-## 多人聊天室
-### 功能
-- 在线成员列表展示（实时的）
-- 多人在线聊天
-- 选择在线成员单聊
+解决：    
+如果客户端成功连接后， 一直向服务器端在指定的时间内发送消息，服务端如果在指定间隔回答消息，那么说明网络一定仍然连通。但是如果关闭网络，客户端仍然向服务端发送消息，但是服务端接受不到，如果在指定的时间内仍然无法接受带，服务端自动关闭和该客户端连接的socket
 
+具体：    
+假设客户端轮询的时间（定时向后端请求）为 **pingInterval**，假设上一个请求应答（ping & pong）成功，再过 pingInterval 时间，客户端再次发送消息，可是由于网络原因，服务端无法接收到ping通知，服务器将最多等待 **pingTimeout** 时间，如果客户端在该时间内仍未再次发送ping，服务端任务通信结束，自动关闭等待连接的socket。
 
-### 后端实现
+## options 的 path 解释
 ```javascript
-var userList = []
-io.on('connection', function (socket) {
-  console.log('a user connected');
-
-  //上线
-  socket.on('login', (user) => {
-    //user包括姓名，头像等，为了通知其他人也能看到
-    user.id = socket.id //自动分配不重复的id
-    userList.push(user)
-    
-    io.emit('userList', userList); //所有用户更新在线用户列表
-    socket.broadcast.emit('loginInfo', user.name + '上线了') //除了该客户端，广播其它
-    socket.emit('userInfo', user) //返回自己的信息
-  });
-
-  //单聊
-  socket.on('toOne', {id, name, avatarUrl, toId, msg}) {
-    // id 自身id，toId向谁发，msg内容
-    var toSocket = io.sockets.sockets.findOne((sockets)=>{
-      return sockets.id == toId
-    })
-    toSocket.emit('toOne', {id, name, avatarUrl, msg})
-  }
-
-  //群发
-  socket.on('toAll', {id, name, avatarUrl, msg}) {
-    toSocket.emit('toAll', {id, name, avatarUrl, msg})
-  }
-
-
-
-  //下线
-  socket.on('outLogin', function ({id}) {
-    return userIndex = userList.findIndex((user)=>{
-      return user.id = id
-    })
-    userList.splice(userIndex, 1)
-    //后续还是要关闭对于的socket
-  });
-});
+<script src="/socket.io/socket.io.js"></script>
 ```
+你可能会疑惑于：    
+socket.io是如何找到这个文件的，如果你了解node服务，你自然应该想到，所有的资源需要被暴露出来才能被连接，即当在localhost:3000访问时，你虽然访问到了html页面，但是所有的html的链接的资源都是相对localhost:3000来寻找的，如果没有暴露出来，自然找不到。当然也可以用网络连接，不过并不影响前面的理论。   
 
-前端实现 => js部分 + 思路
-- 进入页面先登入，用户名，头像
+解释：    
+ 当挂载服务时，socket.io自动运行，将客户端需要的socket.io文件暴露出去，并暴露链接服务端的接口路径（如果你看过socket在前端的network的请求，你会发现一个通信都是作用在一个请求上，请求的路径默认时localhost:port/socket.io?），socket也相当于一个资源接口，所以，前端发送请求也是需要路径的。
+
+**重点**：path就是配置这个资源路径的参数，配置的时候，前后端要一起配置
 ```js
-$(function () {
+// 后端
+var io = require('socket.io')(server, {path: '/my'});
 
-  var groupMsgList = [];
-  var userList = []
+//前端
+//由于后端暴露的静态资源时'/my'，所有前端拿到socket.io的路径变化 /my/socket.io.js
+//但是此时请求仍然会有问题，你一看请求路径仍然时local..../socket.io。怎么半？
+const socket = io('/', {
+  path: '/my' //设置请求的路径
+})
 
-  var socket = io();
-  //登入事件 => 向服务端说明在线
-  $('login').click(()=>{
-    socket.emit('login', {name, avatarUrl})
-  })
-
-  // 实时更新在线列表
-  socket.on('userList', (userList)=>{
-    // 接受到服务器的返回的单播
-    //更新视图的userList
-  })
-
-  //其它用户上线了
-  socket.on('loginInfo', ({id})=>{
-    // 通知用户上线
-  })
-
-  socket.on('userInfo', ({id})=>{
-    // 接受到服务器的返回的单播，包含id，用于日后的发送消息
-  })
-
-  //群聊发消息
-  $('toAll').click(()=>{
-    socket.emit('toAll', {id, name, avatarUrl, msg});
-    
-  })
-
-  //单聊
-  $('toOne').click(()=>{
-    socket.emit('toOne', {id, name, avatarUrl, msg});
-  })
-
-  //页面卸载
-  window.onunload(()=>{
-    socket.emit('outLogin', {id});
-  })
-});
 ```
-注意的几个点
-- 用户群聊发消息，自己是不需要收到服务器广播，页面更新可以前端直接处理
-- 用户点击在线其它成员头像进行单聊，创建一个新的弹窗进行交流，和数据列表数组。
 
-## 总结
-前端页面就不带码了，没啥好码的，主要是大家要把这个前后端交互逻辑理清楚了，剩余的就是怎么渲染数据的问题。
+
+
+## API 小结（使用到的）
+
+### 服务端
+
+```bush
+const IoServer = require('socket.io');
+const io = new IoServer();
+```
+1.  IoServer 可传参：     
+- httpServer （http.Server）要绑定的服务器。
+- options （选项）
+    - path （String）：捕获路径的名称（/socket.io,你在前端获取的socket.io的文件和发送请求的路径 ）
+    - pingInterval: 默认10000ms， 
+    - pingTimeout: 默认5000ms
+
+2. socket.emit | socket.on
+
+3. socket.id 作为一个通信的随机str值，唯一，一遍服务端区分不同的连接
+```js
+//后端获取 socket.id
+//前端获取
+socket.on('connect', ()=>{
+  console.log(socket.id) //注意，连接成功之后才会返回，并且前后端的id一致
+})
+```
+
+4. io.emit | socket.boradcast.emit | socket.emit
