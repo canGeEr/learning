@@ -15,13 +15,11 @@ npm install sequelize-automate mysql2 -g
 ### 命令参数导出
 ```bash
 
-Usage: sequelize-automate -t [type] -h <host> -d <database> -u <user> 
--p [password] 
--P [port]  -e [dialect] -o [/path/to/models] -c [/path/to/config]
+Usage: sequelize-automate -t [type] -h <host> -d <database> -u <user> -p [password] -P [port]  -e [dialect] -o [/path/to/models] -c [/path/to/config]
 
-
--t js(生成文件 或者直接生成egg) -h localhost -d blog_back -u root -p 
--P 3306 -e mysql -0 ./model
+// sequelize-automate -t egg -h localhost -d glod_bag -u root -p -P 3306 -e mysql -o ./
+-t js|egg  -h localhost -d blog_back -u root -p 
+-P 3306 -e mysql -o ./model
 ```
 ### 命令config导出
 ```bash
