@@ -21,7 +21,7 @@ cd name
 pwd					//show the way to this directdory
 git init			//initialize
 git status          
-git log 
+git log
 git diff
 git log	--pretty=oneline
 git reset --hard HEAD^
@@ -49,4 +49,3 @@ $ git branch			//branch list
 $ git check dev/master
 $ git branch -d dev
 ```
-

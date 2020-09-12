@@ -25,3 +25,9 @@ git pull origin master
 git branch -d 分支名 //删除本地
 git push origin -d 分支名 //删除远程
 ```
+
+
+## 问题3：如何克隆指定的分支
+```bush
+git clone -b branchName(分支名) URL(路径) foldName(文件名)
+```
