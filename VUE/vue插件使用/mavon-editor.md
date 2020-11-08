@@ -27,7 +27,9 @@ new Vue({
 ```javascript
 <template>
     <div id="editor">
-        <mavon-editor style="height: 100%"></mavon-editor>
+        <mavon-editor style="height: 100%"
+            
+        ></mavon-editor>
     </div>
 </template>
 <script>
