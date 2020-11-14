@@ -48,4 +48,5 @@ $ git checkout -b dev == $ git beanch dev + $ git checkout dev
 $ git branch			//branch list
 $ git check dev/master
 $ git branch -d dev
+$ git switch 分支名
 ```
