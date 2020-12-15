@@ -8,3 +8,5 @@ HTML的 style 特性指定的所有样式信息，但不包含与**外部样式�
 
 ## 计算样式
 getComputedStyle
+
+## document.styleSheets
