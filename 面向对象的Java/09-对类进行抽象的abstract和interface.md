@@ -16,3 +16,68 @@
 2. 继承抽象类的子类，如果没有重写所以父类的抽象方法，那么该子类必须是抽象类，否则无法通过编译
 
 3. 抽象方法，不能修饰 final方法，static方法，构造方法，因为这些方法无法被子类继承（当然也无法重写是一个道理），一旦子类声明该父类构造函数将发生编译错误（一是子类只能子类构造函数才能没有返回类型，二是语言上不允许）。
+
+```java
+abstract class TEST {
+  public void freeFun () {
+    System.out.print("抽象类只是在普通类上对一些方法进行约束，其它的大部分没有变")
+  }
+  public abstract void shouldOverrideFun();
+}
+```
+
+## 二、接口 interface 
+PS：思想就是实现设计和实现的分离    
+
+接口是一组常量和抽象方法的集合，其基本定义：
+1. 接口所以声明的变量默认是public final static，因此每个变量成员需要初始值（声明时或者构造函数中，如果还未赋值则编译错误）
+2. 接口的成员方法默认是public abstract，即抽象方法
+3. 接口不是类，没有构造函数，不能实例化对象
+4. 接口继承区别于单继承，采用多继承方式
+```java
+interface TESTInterface {
+  x=1;
+  y;//编译错，没有构造函数，final成员必须只又在声明中赋值
+  void fun();//不能有方法体
+}
+```
+
+### (1) 接口继承
+接口采用多继承方式
+```java
+interface A {int x=1; void funA();};
+interface B {int x=2; void funB();};
+interface C extends A, B{int x=3};
+```
+注意，接口不是类，但是接口之间的继承方式，仍然使用extends关键字。     
+
+### (2) 接口的实现
+如果某个类需要进行约束和规范，那就要用到接口：
+```java
+class TEST implements A, B {
+  public void funA() {
+
+  }
+  public void funB() {
+    
+  }
+}
+abstract class TEST1 implements A, B {
+  public void funA() {
+
+  }
+}
+```
+
+### (3) 多继承的菱形问题
+```java
+TEST test = new TEST()
+test.x // 无法知道x是谁的，它有两个接口继承来源！
+```
+
+因此，接口是方法的实现和设计的抽离，是更高维度（相对类）的对方法进行抽象。即使能够在接口中能够声明变量成员，在实际编程开发中，尽全力的去避免在接口声明变量成员 => 避免导致菱形问题
+
+PS：接口为什么需要成员变量？
+接口本身面对的就不是子类这一说法，它更像一个模块（这也是我想为什么它不叫接口类），模块有各种方法，提供给任何类使用；提到通用性你肯定想到了static变量，它也是可以提高给任何其实现接口的类使用访问
+
+
