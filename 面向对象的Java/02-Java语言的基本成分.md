@@ -85,7 +85,7 @@
     ```
 - 对byte、short型变量，不管是否存在其他类型，都将自动提升为int型
 - 对其它类型，则转换与其他类型最接近的高宽度类型        
-- byte、short、cahr ==> int ==> long ==> float ==> double
+- byte、short、char ==> int ==> long ==> float ==> double
 
 强制类型转换：
 (类型) + 表达式

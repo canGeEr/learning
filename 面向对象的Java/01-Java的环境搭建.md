@@ -65,4 +65,5 @@ jlink.exe --module-path jmods --add-modules java.desktop --output your_path
 
 (2) 编辑环境变量
 JAVAHOME => jdk文件夹；path -> jdk文件夹/bin
+
 > 也就是说装jdk-9.0.4及之后的版本时，配置环境变量时不需要配置classpath变量；更新后，版本带来的变化，模块化后导致不需要或者说将toos.jar和dt.jar文件兼容到其他部分，jdk的lib下面不会再出现这俩文件；
