@@ -85,4 +85,4 @@ function doFun(a, b, c) {
 doFun.bind = bind//Function.prototype.bind = bind 也行
 doFun.bind(obj, 1,2,3)() // '61'
 ```
-这里的实现避开了call和apply的调用，不够传参没办法使用了 ... 解构运算符
+这里的实现避开了call和apply的调用，不过传参没办法使用了 ... 解构运算符
