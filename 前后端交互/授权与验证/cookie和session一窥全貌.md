@@ -16,7 +16,8 @@
 1. Cookie既然是会话机制，那么和服务器交流肯定要传给后端，所以每次再向后端接口请求的请求报文是会带上Cookie告诉后端信息，以便维持会话状态。
 2. Cookie在访问服务器时，服务器可能会在响应消息中增加Set-Cookie字段，将信息以|Cookie形式发送给浏览器，一旦浏览器接受到服务器发送的Cookie消息，那么会将其保存到浏览器的缓冲区，以便下次会话交换信息。
 3. 看一张图   
-<img src="./IMAGES/cookie.png">
+
+<img src="./../../IMAGES/cookie.png">
 
 ### Cookie的几种登入方式
 > 几种方式都比较简单，就不做代码演示了
@@ -29,13 +30,13 @@
 > Session利用上了Cookie   
 
 1. Session是一种服务器端技术，它的生命周期从用户访问页面开始，直到与网站的连接结束。
-当服务端调用Session服务（在一些书上说启动Session，而事实上只有当代码级别的调用Session才会启用Session），web服务器在运行期间为访问该服务器的浏览器创建一个独享的Session文件。在创建Session文件时，每个Session都具有一个唯一的会话ID，用于标识不同的ID（一般是一段长串），且会话ID分别存储在服务端和客户端(Set-Cookie写回Cookie 这一系列从调用session时自动完成，也许就是因此称为服务器端技术把)。
+当服务端调用Session服务（在一些书上说启动Session，而事实上只有当代码级别的调用Session才会启用Session），web服务器在运行期间为访问该服务器的创建一个独享的Session文件。在创建Session文件时，每个Session都具有一个唯一的会话ID，用于标识不同的ID（一般是一段长串），且会话ID分别存储在服务端和客户端(Set-Cookie写回Cookie 这一系列从调用session时自动完成，也许就是因此称为服务器端技术把)。
 
 2. 看下图以PHP为例
 <img src="./IMAGES/session.png">
 
 3. 当浏览器第二次访问服务器时，Session服务自动根据SessionID（请求时会自动的带上Cookie这是关键）识别用户，读取对应的session文件，此时程序操作的session时独立的（每个浏览器访问，服务器开辟一个独立的进程/线程/异步处理）
-,用户代码层次获取的session就是当前读取的session文件，至此会话连接成功。因此，其实对于客户端来说，session是透明的（透明的就是看不见的意思，也不需要前端的同学关注set-cookie写回和携带cookie去请求，都是自动完成，当然一部分是交互的机制实现）。    
+,用户代码层次获取的session就是当前读取的session文件，至此会话连接成功。因此，其实对于客户端来说，session是透明的（透明的就是看不见的意思，也不需要前端的同学关注set-cookie写回和携带cookie去请求，都是自动完成，当然一部分是交互的机制实现）。
 
 4. 看个NodeJs（这是基于koa的EggJs框架）的例子就知道了：
 ```javascript
