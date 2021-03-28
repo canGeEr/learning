@@ -54,7 +54,7 @@ node filename.js//使用node直接解析js文件，并输出结果
 ### 建包 Package
 - 初始化package.json文件
     - 手写一个
-    - npm init [-y] -y 可以直接跳过选项
+    - npm init [-y | --yes] -y 可以直接跳过选项
 - README.md 阅读文档
 - npm install [包名] -S / --save 安装包到该目录下，并写入依赖（package.json的依赖字段dependencies）
 - 配置package.json入口文件，可以编写代码了
@@ -68,6 +68,7 @@ node filename.js//使用node直接解析js文件，并输出结果
     - 包名 --global / -G 添加到本机依赖
 - npm remove / i 包名 + [-S/ -D/ -G] 删除包
 - npm search 包名 联网查询包名，及其信息
+- npm i [包名]@版本号 下载对应版本
 
 ## install global 存在的问题
 npm i 包名 --global 不会像其它指令一样添加到package.json，而是直接下载到主机本地
