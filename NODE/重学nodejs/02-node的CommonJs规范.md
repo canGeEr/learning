@@ -58,3 +58,18 @@ module.exports = {}; module.exports === exports//false
 */
 ```
 说明exports和module.exports指向同一个引用，但是真正模块化的时候，有效的是module.exports上的值
+
+## node的模块
+- 系统模块，比如：http、fs、path等等
+- 包模块
+    - 规范包（下载的npm的包）
+    - 自定义包
+- 自定义文件模块
+
+我们都是通过require函数去引入需要的模块，但是它由一些规则
+引入模块时，需要传入路径参数，路径可以是**相对路径**和**绝对路径**
+
+- 相对路径 代表着自己写的单独的文件模块
+- 只有包名  
+    - 会自动在该目录下查找node_modules下的包名为文件夹名，找到包下的package.json文件的入口字段，并解析对应文件，如果没有则默认找index.js
+    - 找不到就到该目录的上层目录一样查找
