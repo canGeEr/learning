@@ -12,7 +12,7 @@ node的初心是为了做一个高性能的web服务器
 - 非阻塞的异步I/O操作
 
 ## 为什么选择Javascript
-- Javascript没有任何后端语言的背景（历史包袱，向下兼容0
+- Javascript没有任何后端语言的背景（历史包袱，无需向下兼容）
 - 单线程的异步语言
 
 ## 和ECMAScript 比 node优势
@@ -65,7 +65,7 @@ node filename.js//使用node直接解析js文件，并输出结果
     - 不带参数 根据当前目录下的package.json安装依赖到node_modules文件夹里
     - 包名 --save / -S 添加到依赖
     - 包名 --dev / -D 添加到本地依赖
-    - 包名 --global / -G 添加到本机依赖
+    - 包名 --global / -g 添加到本机依赖
 - npm remove / i 包名 + [-S/ -D/ -G] 删除包
 - npm search 包名 联网查询包名，及其信息
 - npm i [包名]@版本号 下载对应版本

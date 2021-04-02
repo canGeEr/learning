@@ -62,8 +62,8 @@ module.exports = {}; module.exports === exports//false
 ## node的模块
 - 系统模块，比如：http、fs、path等等
 - 包模块
-    - 规范包（下载的npm的包）
-    - 自定义包
+    - 规范包（下载的npm的别人发布的包）
+    - 自定义包（自己在node_modules里写的包）
 - 自定义文件模块
 
 我们都是通过require函数去引入需要的模块，但是它由一些规则
