@@ -84,3 +84,18 @@ for (let i = 1; i <= 11; i++) {
     }
 }
 ```
+
+## 异步？
+```javascript
+const EventEmitter = require('events');
+const emitter = new EventEmitter();
+emitter.on('test',function(){
+    console.log(111)
+});
+emitter.emit('test');
+console.log(222)
+// 输出
+// 111
+// 222
+```
+代码证明是同步
