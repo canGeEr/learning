@@ -2,8 +2,27 @@
 
 
 ## Proxy 代理
-当要访问一个对象的属性是，能否监听，并随时改变，这就是Proxy的功能。
-Proxy实例的操作是否改变关键在于，监听时是否对target进行更改
+> Proxy 构造函数用于创建一个参数对象的代理，从而实现基本操作的拦截和自定义（如属性查找、赋值、枚举、函数调用等
+
+**handler的各各属性是对应的捕获器（trap）**
+常见的监听方法有：
+- getPrototypeOf
+- setPrototypeOf
+- isExtensible
+- preventExtensions
+- getOwnPropertyDescriptor
+- defineProperty
+- has 拦截in操作
+- deleteProperty 拦截delete操作
+- get(target, propKey, receiver) 拦截访问属性，表示Proxy实例本身
+- set(target, propKey, value, receiver) 拦截赋值属性
+- ownKeys 拦截getOwnPropertyNames或者getOwnPropertySymbols
+- apply 拦截函数调用
+- construct 拦截new操作调用
+
+#### 问Vue为什么用Proxy重写
+- defineProperty 无法监听对象重新添加的属性
+- defineProperty 不能很好的实现对数组下标的监控（可能新增元素）
 
 
 ## Reflect
