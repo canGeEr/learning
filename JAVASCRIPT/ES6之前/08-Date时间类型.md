@@ -71,3 +71,11 @@ Date.UTC(某同一时间点) - new Date(某同一时间点) === 8*3600*1000
 ## Date的实例方法
 - 获取时间具体值：get + [英文单词]，比如getFullYear、 getMonth、getDate、getDay、getHours、getMinutes、getSeconds（时、分、秒记得+s）
 - 注意getDay获取星期几（美国的第一天是星期日）
+- 格式化表示输出to...String
+    - toString
+        - toDateString 日期
+        - toTimeString 时间点
+    - toLocalString
+        - toLocalDateString 日期
+        - toLocalTimeString 时间点
+    - toUTCString UTC时间，比本地时间多对于的时区的时间
