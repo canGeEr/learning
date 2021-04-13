@@ -33,6 +33,16 @@ http://nodejs.cn/learn/nodejs-file-paths
     ```javascript
     //在e:\nodeDemo下执行index.js脚本
     path.resolve('index.js') // e:\nodeDemo\index.js
+    //当传入多个参数时，从右往左如果不是绝对路径则进行拼接，直到扫描完成还不是绝对路径则加上当前文件目录的路径，一旦生成绝对路径直接返回
+    path.resolve('/目录1/目录2', './目录3');
+    // 返回: '/目录1/目录2/目录3'
+    
+    path.resolve('/目录1/目录2', '/目录3/目录4/');
+    // 返回: '/目录3/目录4'
+    
+    path.resolve('目录1', '目录2/目录3/', '../目录4/文件.gif');
+    // 如果当前工作目录是 /目录A/目录B，
+    // 则返回 '/目录A/目录B/目录1/目录2/目录4/文件.gif'
     ```
 - normalize：解析相对路径字符
     ```javascript
