@@ -125,3 +125,19 @@ console.log([...str.matchAll(pattern)])
 ## replace
 > 它很有用在于它可以有回调的处理每一次匹配，这让我们可以做非常多的事请，显得很强大
 
+第一个参数是正则实例，表示需要匹配什么样的字段，第二次参数和替换（replace）有关，可以是一个字符串，也可以是一个函数
+- 字符串的时候，之间将所有匹配到的字符串进行替换
+- 函数就是在每个匹配的时候，调用回调函数进行处理
+
+```javascript
+const pattern = /ab(c)/g
+const str = 'abcbcaababc'
+str.replace(pattern, function(...args) {
+    console.log(args)
+    /*
+    [ 'abc', 'c', 0, 'abcbcaababc' ]
+    [ 'abc', 'c', 8, 'abcbcaababc' ]
+    */
+    return 'd' //要替换的字符串
+}) //dbcaabd 返回的值
+```

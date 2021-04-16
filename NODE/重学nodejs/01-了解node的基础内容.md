@@ -114,3 +114,26 @@ nrm use 镜像名 //使用该镜像
 nrm add ... //手动添加镜像
 nrm del ... //手动添加镜像
 ```
+
+## npx
+> npm 从5.2版开始，增加了 npx 命令      
+
+通常在命令行执行命令要么当前文件夹下存在可执行文件，要么去$PATH（环境变量去查找），这也是为什么我们安装一些模块需要npm i -g全局安装包（全局安装的包的存储路径被加入到了$PATH里）
+
+有没有什么办法可以解决这个问题？npx出现了
+
+使用npx + 命令，比普通的直接执行命令多了一种查询：**去node_modules/.bin路径找**，这使得一些需要全局安装的模块可以当前目录安装并间接的通过**npx+命令**来执行，比如
+```bush
+//创建react项目
+npx create-react-app my-app
+
+//启动eslint检测js文件代码风格
+npx eslint
+//如果不用npx需要./node_modules/.bin/eslint（路径下的eslint可执行文件） yourfile.js一大段
+```
+
+## npm run 指令
+npm run 在命令行执行的时候自动的找到当前目录下的package.json的script配置，并执行配置的命令相当于
+```bush
+npx + script命令的字符
+```
