@@ -1,4 +1,4 @@
-# JSX
+# 01-JSX
 
 ## 什么是JSX
 它是一个 JavaScript 的语法扩展。我们建议在 React 中配合使用 JSX，JSX 可以很好地描述 UI 应该呈现出它应有交互的本质形式。JSX 可能会使人联想到模版语言，但它具有 JavaScript 的全部功能。
@@ -117,15 +117,16 @@ React的组件的特殊之处在于：
 
 ## JSX需要注意的几个地方
 
-- 因为 JSX 语法上更接近 JavaScript 而不是 HTML，所以 React DOM 使用 camelCase（小驼峰命名）来定义属性的名称，而不使用 HTML 属性名称的命名约定。例如，JSX 里的 class 变成了 className，而 tabindex 则变为 tabIndex
+1. 因为 JSX 语法上更接近 JavaScript 而不是 HTML，所以 React DOM 使用 camelCase（小驼峰命名）来定义属性的名称，而不使用 HTML 属性名称的命名约定。例如，JSX 里的 class 变成了 className，而 tabindex 则变为 tabIndex
 
-- JSX在写组件元素时，组件元素的变量名一定要大写开头
+2. JSX是严格的HTML写法，接近XHTML，所以一些标签写法没有容错！比如在HTML写input标签可以
+    ```html
+    //  html
+    <input type="input">
 
-- JSX是严格的HTML写法，接近XHTML，所以一些标签写法没有容错！比如在HTML写input标签可以
-```html
-//  html
-<input type="input">
+    //  JSX 注意标签的闭合，注意单标签元素br、hr、img、meta、link、input
+    <input type="input" /> 
+    ```
 
-//  JSX 注意标签的闭合，注意单标签元素br、hr、img、meta、link、input
-<input type="input" /> 
-```
+3. SX在写组件元素时，组件元素的变量名一定要大写开头
+
