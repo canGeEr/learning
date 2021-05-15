@@ -57,6 +57,8 @@ console.log(this.state.value);
 
 setState传递一个函数，**函数第一个形参表示state，但是这个state是之前调用的所以setState方法更新之后获取到的state**，因此可以放心的使用，props也是最新的。需要注意的是：回调函数的返回值即return的值是设置的新的state
 
+> setState可以传递第二个函数参数，和Vue的nextTick很相识
+
 
 ## 生命周期
 了解生命周期非常重要：
@@ -108,7 +110,7 @@ setState传递一个函数，**函数第一个形参表示state，但是这个st
 
   这个阶段最好理解，但是这个阶段也是最消耗性能的阶段，因此如果可以应该尽量的减少更新：该阶段的执行（shouldComponentUpdate进行过滤判断）
 
-- **shouldComponentUpdate** 组件是否需要更新，（PureComponent是对它进行封装）
+- **shouldComponentUpdate(nextProps, nextState)** 组件是否需要更新，（PureComponent是对它进行封装）
 
   这里可以当state或者props有变动的时候，进行判断，如果一些值没有变化，可以选择返回false，那么render等之后的生命周期函数就不会调用
 
