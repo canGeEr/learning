@@ -1,4 +1,4 @@
-# 搭建React(cli) 
+# 00-React的创建
 
 ## 创建
 1. npm install create-reaact-app -g //全局安装

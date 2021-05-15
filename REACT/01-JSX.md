@@ -113,7 +113,7 @@ React的组件的特殊之处在于：
     <components[prototypeName] /> //只要prototypeName的值变化了，那么这个组件就变了
     ```
 
-
+> 特别要注意的是：**不能直接的在JSX内嵌表达式中 { Component } 注意，内嵌表达式的返回值需要能够转换为JSX元素，而组件（无论是函数组件和class组件本质上都是一个函数对象）显然需要接受Props才能算是真正意义上的JSX元素**
 
 ## JSX需要注意的几个地方
 
