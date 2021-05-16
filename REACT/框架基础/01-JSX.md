@@ -169,3 +169,16 @@ Warning: Functions are not valid as a React child. This may happen if you return
 
 
 因为是一个内置元素包裹着 {List} ！对于div它已经是最终的渲染的最小单位了，它不接受props.children属性更没有下层组件传递props，那么div的子元素就必须能够渲染出来，而不是一个函数，这样无法解析！
+
+## 组件到DOM的转换
+组件是一个函数，但是组件一般都返回元素，或者JSX元素，当使用一个JSX组件写法时，
+```javascript
+<Component />
+```
+其实相当于调用了组件这个函数（或者类函数），这个JSX表达式自然的就会返回元素对象（VNode）！和
+```javascript
+<h1 />
+```
+打印形态时一样的。
+
+注意通过解析VDOMTree，渲染出整个DOM，最终插入页面展示
