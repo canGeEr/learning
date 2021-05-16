@@ -113,8 +113,6 @@ React的组件的特殊之处在于：
     <components.prototypeName /> //只要prototypeName属性的值变化了，那么这个组件就变了
     ```
 
-> 特别要注意的是：**不能直接的在JSX内嵌表达式中 { Component } 注意，内嵌表达式的返回值需要能够转换为JSX元素，而组件（无论是函数组件和class组件本质上都是一个函数对象）显然需要接受Props才能算是真正意义上的JSX元素**
-
 ## JSX需要注意的几个地方
 
 1. 因为 JSX 语法上更接近 JavaScript 而不是 HTML，所以 React DOM 使用 camelCase（小驼峰命名）来定义属性的名称，而不使用 HTML 属性名称的命名约定。例如，JSX 里的 class 变成了 className，而 tabindex 则变为 tabIndex
@@ -130,3 +128,44 @@ React的组件的特殊之处在于：
 
 3. SX在写组件元素时，组件元素的变量名一定要大写开头
 
+## Component有时无法直接套上内嵌表达式
+这里的List和Layout都是一个组件：
+```javascript
+<Layout {...props}>
+  <h2>dadsa</h2>
+  {List} //注意，这里很危险，它直接将List组件函数传入
+</Layout>
+```
+List被解析成功，因为它是一个函数对象（即使它是class类，那也是函数对象）。因此在Layout组件内的props对象，存在属性children是一个数组，表示有两个子元素，一个子元素是h1，另外一个是一个**类函数**！
+
+你甚至可以在Layout组件里面这样去写，渲染List组件
+```javascript
+function Layout(props) {
+  console.log(List);
+  const List = props.children[1];
+  return (
+    <div className="layout">
+      这是一个List组件
+      <List />
+    </div>
+  );
+}
+```
+
+但是，注意，如果将Layout组件内部代码改成如下：
+```javascript
+return (
+  <div className="layout">
+    这是一个List组件
+    {List}
+  </div>
+);
+```
+使用内嵌表达式渲染组件，报错：
+```bush
+Warning: Functions are not valid as a React child. This may happen if you return a Component instead of <Component /> from render. Or maybe you meant to call this function rather than return it.
+```
+为什么？
+
+
+因为是一个内置元素包裹着 {List} ！对于div它已经是最终的渲染的最小单位了，它不接受props.children属性更没有下层组件传递props，那么div的子元素就必须能够渲染出来，而不是一个函数，这样无法解析！
