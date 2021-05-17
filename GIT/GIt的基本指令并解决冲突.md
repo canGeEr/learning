@@ -5,7 +5,7 @@
 - git status: 查看本地仓库的工作区和缓存区的状态
     - 如果工作区修改内容，提示git add
     - 如果缓冲区内容修改，提示git commit
-- git add [文件名/.(代表全部)]: 添加记录到缓冲区
+- **git add** [文件名/.(代表全部)]: 添加记录到缓冲区 （对于项目组开发，其实推荐项目代码量大的，一个文件一个文件的添加）
 - git commit 
     - -m: 提交记录到分支
     - --amend 对最新的commit进行修改，即不会生成新的commit记录，而是对上一次进行修改
@@ -41,14 +41,22 @@
 - 查看分支：
     - git branch
     - git branch -v 包含分支的更多信息（最新的commit）
+    - git branch -a 查看所有的分支信息（包括即使本地没有，也会显示远程的）
 
 - 删除分支：
     - git branch -d 删除分支（如果没有和master合并过不允许删除，保证不会误删）
     - git branch -D 强制删除分支
+
+- 修改分支：
+    - git branch -m 老分支名 新的分支名（运行之后，本地的老分支直接被删除）
+    - git branch --delete origin 老分支名 （删除远程的老分支名）
+    - git push origin 新的分支名 （本地新分支推送到远程仓库）
+
+
+
 - 合并分支
     - git merge [分支名] 将当前的分支和指定分支合并
     - git merge --abort
-
 ### 远程分支
 - 建立连接：    
     - git remote add    origin [URL]  添加远程分支
@@ -76,7 +84,7 @@
 
 - 多人共用一分支master，合并远程分支
     - 每次更新本地分支之前先pull一次，再进行commit和push，只要保证先pull，再push就不会有冲突，因为一个分支上，必然能够合并
-    - 一旦先commit和push就会导致冲突，这个时候就需要手动去现在保留部分，再次做出commit和push
+    - 一旦先commit和push就会导致冲突（你当前本地版本的提交记录没有远程仓库的记录多），这个时候就需要先git pull远程的代码（注意，在git pull之前记得清空当前的工作区，否则无法进行git pull），git pull命令执行后，git会自动的merge远程和当前分支，并对有冲突的地方进行提示。 最后手动去现在保留部分，再次做出commit和push
 
 - 本地工作，合并分支
     - 当本地工作，开启多个分支时，如果多个分支都有commits记录，那么在合并两个分支的时候极有可能产生冲突（冲突原则看上一段解析）
