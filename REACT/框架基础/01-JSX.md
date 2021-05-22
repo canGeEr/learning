@@ -67,11 +67,11 @@ const virtualNodeSpan = <span className='logo' style={{
 值得注意的是，内嵌表达式也可以解析JSX元素！
 
 ```javascript
-const spanElement = <span>一个span元素</span>
+const spanElement = <span>一个span元素</span> // spanElement 已经被转换为React元素了
 const cardElement = (
   <div className="card">
     {spanElement} 
-    <!-- 这样也可以渲染JSX元素-->
+    {/* 这样也可以渲染JSX元素 （这是JSX的注释） */}
   </div>
 )
 ```
@@ -81,7 +81,7 @@ const cardElement = (
 > 组件这个概念，如果学习其他框架就好理解。单独的抽离出的 UI + 功能
 
 React的组件的特殊之处在于：
-1. 纯函数，无副作用的组件叫做无状态组件（有些人叫函数组件，但是hooks的出现打破这一说法，函数组件也可以有状态）（类比Vue的函数式组件，这类组件开销小）
+1. 纯函数，无副作用的组件叫做无状态组件（有些人叫函数组件，但是hooks的出现打破这一说法，函数组件也可以有状态）（类比Vue的函数式组件，这类组件开销小）【注意，纯函数和PureComponent的概念要区分，后者只是组件进行生命周期**shouldComponentUpdate**定制做的优化罢了】
 
 2. class组件面向对象（类比Vue的单文件组件）
 
@@ -126,7 +126,7 @@ React的组件的特殊之处在于：
     <input type="input" /> 
     ```
 
-3. SX在写组件元素时，组件元素的变量名一定要大写开头
+3. JSX在写组件元素时，组件元素的变量名一定要大写开头
 
 ## Component有时无法直接套上内嵌表达式
 这里的List和Layout都是一个组件：
@@ -168,7 +168,7 @@ Warning: Functions are not valid as a React child. This may happen if you return
 为什么？
 
 
-因为是一个内置元素包裹着 {List} ！对于div它已经是最终的渲染的最小单位了，它不接受props.children属性更没有下层组件传递props，那么div的子元素就必须能够渲染出来，而不是一个函数，这样无法解析！
+因为是一个内置元素包裹着 {List} ！对于div（内置元素）它已经是最终的渲染的最小单位了，它不接受props.children属性更没有下层组件传递props，List又是一个函数无法直接转换为DOM渲染，这样无法解析！
 
 ## 组件到DOM的转换
 组件是一个函数，但是组件一般都返回元素，或者JSX元素，当使用一个JSX组件写法时，

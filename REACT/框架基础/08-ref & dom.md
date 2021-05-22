@@ -54,14 +54,55 @@ class Parent extends React.Component {
 }
 ```
 
-## refs转发
-> 核心词：React.forwardRef、forwardedRef={ref}
+## refs的缺陷
 解决几个问题
 - refs无法对函数组件处理
+    ```javascript
+    <FunCOmponent ref={ref} /> // 报错
+    ``` 
 - refs使用在组件上，只能获取组件的实例
+
+这些问题的关键点，在于ref属性，是react内部处理过了，因此只要我们在传递的时候，使用其它属性名传递ref值
+- 其它属性给函数组件作prop不像ref，不会报错
+- 其它属性给类组件做prop不像ref，不会直接获取组件实例
+
+刚好解决了问题，示例：
+```javascript
+import React from 'react';
+
+const index = () => {
+  const ref = React.createRef();
+  console.log('触发更新', ref.current, ref);
+  return (
+    <div>
+      <TestCom realRef={ref} />
+    </div>
+  );
+};
+
+const TestCom = ({ realRef }) => (
+  <div className="test-com" ref={realRef}>
+    这是test-com元素
+  </div>
+);
+
+export default index;
+```
+
+
+依据这一点，我们可以自己使用其它属性来在中间传递ref，最终获取对应的元素DOM。**但是需要注意：** 这种代码开起来相当难以维护，不适合复杂、大型项目
+
+
+
+
+
+
+## 官方解决方案 forwardRef
+> 核心词：React.forwardRef、forwardedRef={ref}
 
 解决第一点：
 ```javascript
+//index.js
 //原来的FancyButton组件
 function FancyButton(props) {
     return (
@@ -71,7 +112,7 @@ function FancyButton(props) {
     )
 }
 
-
+//index.js
 //改后FancyButton组件
 const FancyButton = React.forwardRef((props, ref) => (
     <button ref={ref} className="FancyButton">
