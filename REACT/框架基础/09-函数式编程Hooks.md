@@ -125,3 +125,17 @@ const Index = () => {
 - useRef 也是会缓存 ref，在react函数中尽量的使用use，因为能有缓存效果
 
 > useMemo、 useCallback 和 React.memo搭配使用都是可以的
+
+
+## useMemo和useCallback解决Hooks性能问题
+想象一个场景，我们需要渲染当前的时间到页面，但是单纯的获取时间无法格式化，因此我们有一个方法叫做formatDate，格式化时间函数（这个函数由于某些原因无法抽离）
+```javascript
+export default function Index() {
+  const formatDate = function() {
+    //.... 这里是处理函数
+  }
+  return (
+    <button>渲染的一个按钮{formatDate()}<button>
+  )
+}
+```
