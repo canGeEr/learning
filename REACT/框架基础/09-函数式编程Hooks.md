@@ -139,3 +139,55 @@ export default function Index() {
   )
 }
 ```
+可是，如果你熟悉Hooks，你就知道Index每次更新重新渲染，就会生成新的一个函数对象formatDate，即使formatDate和渲染逻辑无关（它本身就不需要改变）。
+为了考虑性能问题：
+```javascript
+export default function Index() {
+  const formatDate = useCallback(function () {
+    //.... 这里是处理函数
+  }, [])
+  return (
+    <button>渲染的一个按钮{formatDate()}<button>
+  )
+}
+```
+useCallback传入只会，会记忆函数（其实也就是外层作用域保存该函数，即使函数执行完成不会丢失），当再次执行该函数组件时，useCallback()会返回第一次的值，当然如果useCallback需要重新计算的话，可以传递依赖数组deps，依赖数组进行浅对比，不同则重新计算记忆函数。
+
+useCallback是记忆传入的函数，那么useMemo是记忆传入参数返回的值，同样也有依赖数组：
+```javascript
+export default function Index() {
+  const formatDate = useMemo(function () {
+    return function() {
+      //.... 这里是处理函数
+    }
+  }, [])
+  return (
+    <button>渲染的一个按钮{formatDate()}<button>
+  )
+}
+```
+
+useCallback(fun) 等效于 useMemo(() => fun)
+
+
+## useCallback 和 useMemo 涉及的旧值问题
+
+这里就会涉及到旧值问题：
+```javascript
+export default function Index() {
+  const [state, setState] = useState(0)
+  const fun = useMemo(function () {
+    console.log(state)
+    setState(state+1)
+    return null
+  }, [])
+  return (
+    <button onclick={()=>{
+      fun()
+    }}>state的值为：{state}<button>
+  )
+}
+```
+你点击按钮会惊讶的发现打印的值一直是0，但是Dom显示的state的值一直在增加！
+setState拥有和useCallback一样的功能，它被保存在外部作用域，并且重新执行时返回旧值！但是state则不一样，它每次setState函数执行都会重新加载组件函数，产生新的值（毕竟我们更新状态，就拿到最新的值）
+
