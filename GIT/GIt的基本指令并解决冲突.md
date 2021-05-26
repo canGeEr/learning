@@ -15,6 +15,12 @@
     - 不加参数：保留工作目录，并清空暂存区（一般这样的才喜欢，它的功能可以认为是清除缓存区，但是有副作用）
 - git checkout -- [文件名] 可以丢弃工作区的修改，回到最近一次的commit或者add（注意这条命令针对的是工作区）
 
+- git revert [commit'SHA] 撤销（也是恢复） revert能撤销[commit'SHA]提交的内容（和最新的commit比较），比如[commit'SHA]提交记录增加一个a.txt文件，那么git revert会生成一个新的提交，并且内容为“对[commit'SHA]提交内容的删除”。
+
+## revert 和 reset 的区别
+- revert 会保留之前的commits，并生成新的提交记录；reset却只是直接将指定的commit之后的所以提交进行“不可逆的删除”（指定hard的话）
+- revert 只是对一条记录的副作用删除；reset是对记录之后的所以副作用全部删除
+
 ## 分析记录
 - git log 查看记录
     - git log -p 在该指令上，更加细致的展示commit的变化
