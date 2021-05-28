@@ -11,7 +11,8 @@
 
 1. 准备下载npm包 **react-app-rewired** **customize-cra**
 ```bash
-npm install react-app-rewired customize-cra -S
+npm install react-app-rewired -D
+npm install customize-cra -S
 ```
 
 
