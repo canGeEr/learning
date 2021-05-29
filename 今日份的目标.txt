@@ -1,5 +1,8 @@
-
-
-啥时候去学一下react的原理部分内容
-react和ts结合，对博客的中台部分进行重构
-啥时候把node重新看一遍
+做拖动元素的效果
+学习React和Vue的原理
+学习Vue3
+学习Router的实现
+学习Typescript + React的结合
+学习总结React-router的用法 封装一个可配置的路由
+学习总结React-redux的用法
+怎么自己实现权限控制
