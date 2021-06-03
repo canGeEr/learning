@@ -1,5 +1,4 @@
 可配置的路由 总结
-学习总结React-redux的用法
 
 学习Typescript + React的结合
 怎么自己实现权限控制
@@ -9,3 +8,4 @@
 学习React和Vue的原理
 学习Vue3
 
+能不能高效的干完自己的活

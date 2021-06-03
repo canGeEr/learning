@@ -21,6 +21,7 @@ usernameContext.displayName = 'usernameContext';
 export default usernameContext;
 
 // app.js
+import { Provider } from './usernameContext' // React.createContext() 提供 两个对象 Provider、Consumer
 <Provider value="shepijcanwu">
   <h1>
     <SetState /> <!-- SetState需要使用context -->
@@ -145,5 +146,10 @@ SetState.contextType = usernameContext;
     }
     ```
 
-
+## useContext 
+Hooks是得代码写起来更加简洁：
+```javascript
+// useContext 主要是在订阅context的时候十分方便，在发布和注入Provider的时候还是一样的流程
+const value = useContext(usernameContext) // 直接在函数组件内使用非常方便
+```
 
