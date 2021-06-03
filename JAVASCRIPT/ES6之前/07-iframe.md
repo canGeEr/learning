@@ -17,8 +17,8 @@
 
 ## iframe通信
 我们可以在当前页面通过window.iframes包含所有子iframe的window对象的数组引用，两种访问具体iframe的方式
-- window.iframes[index]
-- window.iframes[iframeName] 通过框架名称获取
+- window.frames[index]
+- window.frames[iframeName] 通过框架名称获取
 
 有没有直接的表示关系的获取方式？
 > 除非最高层窗口是通过 window.open()打开的，否则其 window 对象
@@ -70,7 +70,7 @@ iframe如何跨域通信，并不是广义上的发起跨域请求
 <!-- shepiji.top/index.html -->
 <iframe src="wczix.top/index.html"> </iframe>
 <script>
-    const iframe = document.iframes[0]
+    const iframe = document.frames[0]
     iframe.src = 'wczix.top/index.html#message=newDate"
 </script>
 ```
