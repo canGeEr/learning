@@ -36,7 +36,7 @@
         }, 1000)
     })
     setTimeout(()=>{
-            promise.then(onFulfilled, onRejected)
+        promise.then(onFulfilled, onRejected)
     }, 2000)
     ```
 
@@ -137,6 +137,7 @@ let onRejected = function(error) {
     console.log(error, '错误获取')
     console.log(promise2 === promise1)
 }
+
 const promise = new Promise((fulfill, reject) => {
     setTimeout(()=>{
         reject(true)
