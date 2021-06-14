@@ -1,10 +1,10 @@
 # Promise的几个重要问题
 
 ## 一、 Promise什么时候发生状态改变？什么时候获取值？
-前面说过Promise的excutor是同步执行的回调函数，但是可以触发异步任务，因此有两种情况：
-- 在excutor执行器中立即同步执行调用敲定函数，于是同步的实例改变状态并且获取到结果
+前面说过Promise的executor是同步执行的回调函数，但是可以触发异步任务，因此有两种情况：
+- 在executor执行器中立即同步执行调用敲定函数，于是同步的实例改变状态并且获取到结果
 
-- 在excutor执行器中异步的执行调用敲定函数，比如setTimeout，于是异步的改变实例状态并获取结果
+- 在executor执行器中异步的执行调用敲定函数，比如setTimeout，于是异步的改变实例状态并获取结果
 
 
 ## 二、Promise的实例什么一定要改变状态前指定回调函数吗？
@@ -55,24 +55,24 @@ promise.then(onFulfilled2, onRejected2)
 最终 onFulfilled1 和 onFulfilled2 依次执行
 
 
-## 四、 excutor 执行器 和 then 的回调函数的关系
+## 四、 executor 执行器 和 then 的回调函数的关系
 我们先整理一下，什么操作能产生Promise实例
-- new Prmoise(excutor)
+- new Prmoise(executor)
 - Prmoise.resolve
 - Prmoise.reject
-- Prmoise的实例调用then等方法
-- promise.all、any等静态方法 这个单独考虑
+- Prmoise.prototype.then、finally、catch
+- Promise.all、any、race
 <!-- 
 其中promise.all、any和Prmoise.reject、Prmoise.resolve类似 -->
 我们对齐分类：
 - promise.all、any，对多个promise进行处理，并发或者竞争
 
-- 使用 excutor ，能够实现从0到有，即new Prmoise(excutor)，Prmoise.resolve和Prmoise.reject只不过是对其的简写，特别是thenable对象的then几乎和 excutor 一模一样
+- 使用 executor ，能够实现从0到有，即new Prmoise(executor)，Prmoise.resolve和Prmoise.reject只不过是对其的简写，特别是thenable对象的then几乎和 executor 一模一样
 
 - then等方法，它显得极为特殊，是在原有的promise新生成一个promise（注意原来的Promise实例每调用生成的新的Promise实例都是不同的）
 
 
-但是如果你对then的结构、行为、效果仔细分析，它其实也是某种意义上的 excutor，我们假设一个场景：
+但是如果你对then的结构、行为、效果仔细分析，它其实也是某种意义上的 executor，我们假设一个场景：
 ```javascript
 const promise = new Promise((fulfill, reject) => {
     setTimeout(()=>{
@@ -97,7 +97,7 @@ if 当前的Promise实例状态发生了改变 {
 */
 ```
 
-功能上，then的两个处理函数 是对 excutor 的分解，onFulfilled的执行不仅仅是处理当前Promise实例的值，更是由其返回的值敲定新的Promise的状态并保存结果，onRejected也是如此。
+功能上，then的两个处理函数 是对 executor 的分解，onFulfilled的执行不仅仅是处理当前Promise实例的值，更是由其返回的值敲定新的Promise的状态并保存结果，onRejected也是如此。
 对于返回的新的Promise实例其内部就像执行如下函数      
 - fullfill(onFulfilledResult)
 - reject(onRejectedResult)
@@ -122,7 +122,7 @@ let promise = new Promise((resolve, reject)=>{
 
 
 ## 五、串联多个Promise任务
-只要在excutor执行器上敲定函数的实参 或者 then的回调函数返回值 指定的需要串联的Promise实例，返回的新的Promise就会"跟随"传入该实例
+只要在executor执行器上敲定函数的实参 或者 then的回调函数返回值 指定的需要串联的Promise实例，返回的新的Promise就会"跟随"传入该实例
 
 ## 六、异常穿透 => catch
 ```javascript

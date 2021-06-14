@@ -41,10 +41,10 @@ promise = new Promise((fulfill, reject)=>{ //直接变更状态
 - 由于上面的只有两种过程，这也意味这，该实例的状态变更是不可逆的，变更之后是不可改的，也就是敲定状态（settled）
 
 
-## 三、Promise的构造函数参数 => excutor构造器
-excutor是明显一个回调函数，理所应当的接受参数，规定有两个函数参数作为回调函数 => fulfill，reject（敲定函数）        
+## 三、Promise的构造函数参数 => executor构造器
+executor是一个回调函数，接受参数，规定有两个函数参数作为回调函数 => fulfill，reject（敲定函数）        
 上面是最基础的，下面比较难懂
-- excutor 是同步回调，但是可以触发异步任务，即决定什么时候调用敲定函数
+- executor 是同步回调，但是可以触发异步任务，即决定什么时候调用敲定函数
 - 一旦改变状态之后即调用敲定函数之后，立即将结果保存给promise实例，再次调用任何敲定函数是无效的，即使是抛出异常
 
     ```javascript
@@ -57,15 +57,15 @@ excutor是明显一个回调函数，理所应当的接受参数，规定有两�
         console.log(value)
     })
     ```
-- 抛出异常的效果就和 reject 敲定函数类似，只是传入的错误原因是错误对象，并且会阻止下面代码继续执行（excutor代码）
-- 如果在抛出异常之前就敲定了Promise实例的状态，抛出异常只是有阻止代码先下执行（excutor代码）的效果
+- 抛出异常的效果就和 reject 敲定函数类似，只是传入的错误原因是错误对象，并且会阻止下面代码继续执行（executor代码）
+- 如果在抛出异常之前就敲定了Promise实例的状态，抛出异常只是有阻止代码先下执行（executor代码）的效果
 ## 四、Promise流程图
 ![Promise流程图](https://img-blog.csdnimg.cn/20210102095107546.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3d1Y2FuMTEx,size_16,color_FFFFFF,t_70#pic_center)
 
 ## 五、Promise.resolve 和 Promise.reject
-> Promise.resolve 和 Promise.reject 是 new Promise(excotor) 的 "语法糖"
+> Promise.resolve 和 Promise.reject 是 new Promise(executor) 的 "语法糖"，但是他们都有一个功能：保证返回的值是可信任的Promise
 
-如果你只是需要一个同步敲定状态的的promise，你如果还要写一个excotor就显得麻烦，比较你的目标已经明确 => 一个已经敲定的promise 非 fulfilled 即 rejected        
+如果你只是需要一个同步敲定状态的的promise，你如果还要写一个executor就显得麻烦，比较你的目标已经明确 => 一个已经敲定的promise 非 fulfilled 即 rejected        
 
 - Promise.resolve直接传入参数，对于参数，如果这个值是一个 promise ，那么将***直接返回这个 promise*** ；如果这个值是thenable（即带有"then" 方法），返回的promise会“跟随”这个thenable的对象，采用它的最终状态（then里面可能又fulfill其它promise）；否则返回的promise将以此值完成。此函数将类promise对象的多层嵌套展平。
 
@@ -78,7 +78,7 @@ excutor是明显一个回调函数，理所应当的接受参数，规定有两�
     var p1 = Promise.resolve(thenable);
     console.log(p1 instanceof Promise) // true, 这是一个Promise对象
     ```
-    thenable的then其实就是一个excutor，如果这样写就和new Promise(excutor) 没有太大区别了        
+    thenable的then其实就是一个executor，如果这样写就和new Promise(executor) 没有太大区别了        
     > 这些都是基于没有在内部抛出异常的情况下，考虑抛出异常参考 **第三段**
 
 - Promise.reject 就显得很直接，直接生成一个新的敲定状态为rejected的Promise实例, 传入的参数都会成为新的Promise实例的返回值即错误原因
@@ -200,6 +200,5 @@ promise.finally(()=>{
     console.log(value)
 })
 
-/*
-finally === then(res => res, error => { throw error })
+// 这个技巧非常有用，可以用作中断Promise链
 ```

@@ -68,11 +68,11 @@ Promise词义是：承诺，就和它的语义一样，它能将异步操作封�
 ```javascript
 const promise = new Promise(...)
 ```
-我们有想起来了构造函数一般要进行初始化们可以传递参数，Promise需要一个函数作为参数，这个函数通常叫做excutor（构造器函数） 
+我们有想起来了构造函数一般要进行初始化们可以传递参数，Promise需要一个函数作为参数，这个函数通常叫做executor（构造器函数） 
 
-第二步，new的时候传入一个excutor函数，函数有两个参数 resolve, reject：
+第二步，new的时候传入一个executor函数，函数有两个参数 resolve, reject：
 ```javascript
-const promise = new Promise((resolve, reject)=>{
+const promise = new Promise((fufill, reject)=>{
 
 })
 ```
@@ -80,7 +80,7 @@ resolve表示完成承诺，reject表示拒绝承诺；Promise实例一旦创建
 
 第三步，我们触发ajax，发动异步任务，当成功时，执行resolve函数：
 ```javascript
-const promise = new Promise((resolve, reject)=>{
+const promise = new Promise((fufill, reject)=>{
     $.ajax(Object.assign(config, {success: res=>{
         resolve(res)
     }}))
