@@ -1,0 +1,30 @@
+let const 
+	块级作用域，只在声明的方括号下
+	无法重复声明
+	暂时性死区：声明前使用会报错（但是我个人认为还是存在变量提升，比如在debugger的时候，还未执行到代码就可以看到变量的信息 =》 变量对象）
+	在浏览器环境中没有全局属性，声明之后不会挂载在window上
+
+全局对象
+NODE：global
+web worker: self
+JS: window
+
+错误处理：
+	几种错误;
+	try catch 参数error必备/ try finally、不能多重catch
+	错误处理不能获取异步任务？怎么做错误处理的监控
+
+Promise => 指定回调方式更加灵活、回调嵌套、代码便于阅读和理解、异步编程的一种解决方案、相对于try catch能够捕获异步的异常（手写实现一个Promise A+）
+Ajax + Promise => axios
+fetch
+两者之间的区别
+
+Symbol
+消除魔术字符串：
+	如果是自己定义的字符串，自己需要使用不传出去（不给后端，不输出到DOM操），那么可以考虑使用Symbol代替、常见一点就算Vuex和Redux里面的
+action-type
+	是外面传入的、API调用获取的字符串，不要使用
+
+
+
+async 是什么、什么是迭代器、什么是事件循环
