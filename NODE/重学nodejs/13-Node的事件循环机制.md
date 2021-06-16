@@ -44,17 +44,19 @@ Node 中的 Event Loop 和浏览器中的是完全不相同的东西。Node.js�
 
 - 主线程执行完成，进入第一阶段：timers（setTimeout、setInterval），主要检查是否有定时器计时超过对应的阈值，注意，在这个阶段，定时器的数据结构是最小堆，根据设置的阈值就知道谁的执行顺序先。直到执行所有的定时器回调，才执行微任务，进入下一阶段
 
-> 注意 pending callbacks 和 poll 阶段是核心，他们都处理I/O回调 => 本质上是共用一个I/O任务队列，但是 pending callbacks 不负责收集 I/O回调 到 I/O任务队列，而poll能 够收集，因此 pending callbacks 只能在每次在执行完成 poll 后的下一轮事件循环（poll是有最长执行时间和最大执行回调个数，到了限制之后，即使I/O队列还存在任务也得退出，进行到下一阶段）
 
-- pending callbacks / I/O callbacks，检查I/O队列（上一轮poll留下来），比如文件读取、写入，执行I/O任务直到所有的I/O队列完成，执行微任务，进入下一阶段
+
+- pending callbacks / I/O callbacks，检查I/O队列（上一轮poll留下来），比如文件读取、写入，执行I/O任务，执行微任务，进入下一阶段
 
 -  idle, prepare 是内部的实现，没必要讨论
 
 - poll轮询阶段，为啥需要它？ 
-  - timer阶段和 pending callbacks 阶段有各种回调，这些回调也是能够触发异步任务，因此，即使当 pending callbacks 完成所有微任务后，I/O队列和定时器队列还是存在大量的任务等待执行
-  - poll 首先查看 是否存在已经超时的定时器，存在，回到timer阶段重新走
+  - timer 阶段和 pending callbacks 阶段有各种回调（包括微任务），这些回调也是能够触发异步任务，因此，即使当 pending callbacks 完成所有微任务后，I/O队列和定时器队列还是存在大量的任务等待执行
+  - poll 首先查看 是否存在已经超时的定时器，存在，回到timer阶段重新走（这个只会在进入poll的时候，做一次判断）
   - poll 发现没有超时的定时器，查看I/O队列是否存在任务，执行任务队列的任务，但是，每执行完成一个任务就执行所有的微任务
   - poll 执行完任务发现为空，那么检查是否存在setImmediate任务注册，如果存在那么结束poll，进入 下一阶段 
+
+> 注意 pending callbacks 和 poll 阶段是核心，他们都处理I/O回调 => 本质上是共用一个I/O任务队列，但是 pending callbacks 不负责收集 I/O回调 到 I/O任务队列，而poll能 够收集，因此 pending callbacks 只能在每次在执行完成 poll 后的下一轮事件循环（poll是有最长执行时间和最大执行回调个数，到了限制之后，即使I/O队列还存在任务也得退出，进行到下一阶段）
 
 - check 执行 setImmediate
 - close callbacks  执行关闭回调
