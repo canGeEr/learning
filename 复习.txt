@@ -28,3 +28,11 @@ action-type
 
 
 async 是什么、什么是迭代器、什么是事件循环
+
+
+为什么说小程序能够做到双线程，JS不是单线程也能更新DOM吗，是不是底层浏览器的限制
+
+MutationObserver
+queueMircotask
+requestAnomationFrame
+setMessage 和 MessageChannel
