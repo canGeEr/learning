@@ -37,6 +37,20 @@ JS能访问的DOM是DOM Tree，所以只要DOM Tree的对于节点已经被解�
 ## 访问Node.style
 Node.style是属于节点信息，这是它和style样式表的本质区别，它在DOM tree上，因此无论怎么操作 Node.style 都只是更新对应 DOM tree 的节点的 style 属性。因此，对Node.style的读取，根本不至于重新的render tree，可以等到执行完成脚本后统一的重新计算样式。
 
+## transition的时机
+```javascript
+const block = document.getElementById('block')
+const button = document.getElementById('button')
+button.addEventListener('click', function(event) {
+  block.style.transform = 'translateX(200px)'
+  // window.getComputedStyle(block).transform
+  block.style.transition = 'transform 1s ease-in-out'
+  block.style.transform = 'translateX(100px)'
+})
+```
+transition作用后
+将前一棵DOM树对应属性，和最新的要渲染的DOM树的对应属性，形成的一个动画
+
 
 ## 为什么”离线DOM” 能优化？
 ```javascript
