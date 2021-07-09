@@ -90,22 +90,11 @@ const PromiseAPro = (function () {
     // fulfill可以实现串联
     fulfill(result) {
       if (this[privatePropertyNames.state] === PromiseState.pending) {
-        if (result instanceof PromiseAPro) {
-          result.then(
-            (res) => {
-              this.fulfill(res);
-            },
-            (error) => {
-              this.reject(error);
-            }
-          );
-        } else {
-          this[privatePropertyNames.state] = PromiseState.fulfilled;
-          this[privatePropertyNames.result] = result;
-          this[privatePropertyNames.fulfillCallbacks].forEach((callback) =>
-            callback()
-          );
-        }
+        this[privatePropertyNames.state] = PromiseState.fulfilled;
+        this[privatePropertyNames.result] = result;
+        this[privatePropertyNames.fulfillCallbacks].forEach((callback) =>
+          callback()
+        );
       }
     }
 
@@ -125,24 +114,54 @@ const PromiseAPro = (function () {
         throw error;
       }
     ) {
-      return new PromiseAPro((fulfill, reject) => {
+      const nextPromiseAPro = new PromiseAPro((fulfill, reject) => {
         switch (this[privatePropertyNames.state]) {
           case PromiseState.pending:
             this[privatePropertyNames.fulfillCallbacks].push(() => {
-              this.connectPromise(onFulfilled, fulfill, reject);
+              queueMicrotask(()=>{
+                try {
+                  const result = onFulfilled(this[privatePropertyNames.result]);
+                  this.connectPromise(result, fulfill, reject, nextPromiseAPro);
+                } catch(error) {
+                  reject(error)
+                }
+              })
             });
             this[privatePropertyNames.rejectCallbacks].push(() => {
-              this.connectPromise(onRejected, fulfill, reject);
+              queueMicrotask(()=>{
+                try {
+                  const result = onRejected(this[privatePropertyNames.result]);
+                  this.connectPromise(result, fulfill, reject, nextPromiseAPro);
+                } catch(error) {
+                  reject(error)
+                }
+              })
             });
             break;
           case PromiseState.fulfilled:
-            this.connectPromise(onFulfilled, fulfill, reject);
+            queueMicrotask(()=>{
+              try {
+                const result = onFulfilled(this[privatePropertyNames.result]);
+                this.connectPromise(result, fulfill, reject, nextPromiseAPro);
+              } catch(error) {
+                reject(error)
+              }
+            })
             break;
           case PromiseState.rejected:
-            this.connectPromise(onRejected, fulfill, reject);
+            queueMicrotask(()=>{
+              try {
+                const result = onRejected(this[privatePropertyNames.result]);
+                this.connectPromise(result, fulfill, reject, nextPromiseAPro);
+              } catch(error) {
+                reject(error)
+              }
+            })
             break;
         }
       });
+
+      return nextPromiseAPro
     }
 
     catch(onRejected) {
@@ -163,20 +182,91 @@ const PromiseAPro = (function () {
     }
 
     // 串联Promise
-    connectPromise(callback, fulfill, reject) {
-      queueMicrotask(() => {
+    connectPromise(lastPromiseAPro, fulfill, reject, nextPromiseAPro) {
+      if( lastPromiseAPro === nextPromiseAPro ) {
+        throw new Error('不能循环使用')
+      }
+
+      let called = false
+      if(lastPromiseAPro !== null && (typeof lastPromiseAPro === 'object' || typeof lastPromiseAPro === 'function')) {
         try {
-          const result = callback(this[privatePropertyNames.result]);
-          if (result instanceof PromiseAPro) {
-            result.then(fulfill, reject);
+          then = lastPromiseAPro.then
+          if(typeof then === 'function') {
+            then.call(result, 
+              (res) => {
+                if(called) return
+                called = true
+                this.connectPromise(res, fulfill, reject, nextPromiseAPro)
+              }, 
+              (error) => {
+                if(called) return
+                called = true
+                reject(error)
+              }
+            )
           } else {
-            fulfill(result);
+            fulfill(lastPromiseAPro)
           }
-        } catch (error) {
-          reject(error);
+        } catch(error) {
+          if(called) return
+          called = true
+          reject(error)
         }
-      });
+      } else {
+        fulfill(lastPromiseAPro)
+      }
     }
   };
 })();
+
+// promises-aplus-tests测试钩子
+Promise.defer = Promise.deferred = function() {
+  let defer = {}
+  defer.promise = new Promise((resolve, reject) => {
+    defer.resolve = resolve
+    defer.reject = reject
+  })
+  return defer
+}
+try {
+  module.exports = Promise
+} catch (e) {}
+```
+
+
+## 测试
+- package.json
+```json
+{
+  "name": "promise",
+  "version": "1.0.0",
+  "description": "",
+  "main": "Promise.js",
+  "scripts": {
+    "test": "npx promises-aplus-tests Promise.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "promises-aplus-tests": "^2.1.2"
+  }
+}
+```
+
+- Promise.js 文件
+```javascript
+
+// promises-aplus-tests测试钩子
+Promise.defer = Promise.deferred = function() {
+  let defer = {}
+  defer.promise = new Promise((resolve, reject) => {
+    defer.resolve = resolve
+    defer.reject = reject
+  })
+  return defer
+}
+try {
+  module.exports = Promise
+} catch (e) {}
 ```
