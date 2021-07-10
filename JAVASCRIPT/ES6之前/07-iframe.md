@@ -111,7 +111,7 @@ parent.parent.location.hash = self.location.hash.substring(1);
 
 
 ## **window.name传递数据**
-> iframe的src发生非hash的变化或充值，但是由于iframe标签的name属性存在，因此即使页面刷新，name属性都不会变化，而且window.name可以访问
+> iframe的src发生非hash的变化或重置，但是由于iframe标签的name属性存在，因此即使页面刷新，name属性都不会变化，而且window.name可以访问
 
 同样是shepiji.top/index.html、wczix.top/index.html、shepiji.top/temp.html三个页面：
 ```html
