@@ -72,11 +72,11 @@ node在响应阶段的时候，可以先把响应头发送给请求方，然后�
 //处理函数
 function dealRequest(httpRequst, httpResponse) {
     let resurce = ''
-    if(httpResponse.method === 'post') {//post处理
-        httpResponse.on('data', function (data) {
+    if(httpRequest.method === 'post') {//post处理
+        httpRequest.on('data', function (data) {
             resurce+=data
         })
-        httpResponse.on('end', function () {
+        httpRequest.on('end', function () {
             httpResponse.setHeader('Content-Type', 'text/html; charset=utf-8')
             httpResponse.end(resurce)
         })
