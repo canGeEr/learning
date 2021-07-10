@@ -55,7 +55,7 @@ iframe如何跨域通信，并不是广义上的发起跨域请求
 三种办法，本质上都是通过设置全局变量的数据传递数据
 - hashchange监听location.hash传递数据
 - window.name 保持交流
-- - iframe + postMessage
+- iframe + postMessage
 
 ## **location.hash传递数据**
 > location.hash改变页面不会重载（iframe也是）
