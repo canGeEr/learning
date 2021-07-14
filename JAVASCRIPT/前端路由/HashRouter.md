@@ -17,7 +17,7 @@ window.location.hash.slice(1);
 
   - 浏览器左右点击或者设置都是添加记录（JS 维持的 history 栈）
 
-  - 用户自己返回或者前进就是对，history 的指针进行左/右偏移
+  - 用户自己返回或者前进就是对 history 的指针进行左/右偏移
 
 ```javascript
 class Routers {
@@ -27,7 +27,7 @@ class Routers {
     this.state = null;
     this.currentUrl = this.getHashUrl();
     this.currentHisyoryIndex = -1;
-    this.action = "go";
+    this.action = "browser";
     this.reflash = this.reflash.bind(this);
     window.addEventListener("load", this.reflash, false);
     window.addEventListener("hashchange", this.reflash, false);
@@ -54,25 +54,23 @@ class Routers {
     this.currentHisyoryIndex--;
     if (this.currentHisyoryIndex < 0) this.currentHisyoryIndex = 0;
     window.location.hash = `${this.history[this.currentHisyoryIndex]}`;
-    this.action = "back";
+    this.action = "api";
   }
 
-  go() {
+  forwad() {
     this.currentHisyoryIndex++;
     if (this.currentHisyoryIndex >= this.history.length)
       this.currentHisyoryIndex = this.history.length - 1;
     window.location.hash = `${this.history[this.currentHisyoryIndex]}`;
-    this.action = "back";
+    this.action = "api";
   }
 
   reflash() {
     const hasUrl = this.getHashUrl();
-    if (this.action !== "back") {
+    if (this.action === "browser") {
       this.pushHistory(hasUrl);
-    } else {
-      this.action = "go";
     }
-    console.log(this.history);
+    this.action = "browser";
     this.visitRoute(hasUrl);
   }
 }
@@ -103,6 +101,6 @@ backButton.addEventListener("click", function () {
 });
 
 goButton.addEventListener("click", function () {
-  Router.go();
+  Router.forwad();
 });
 ```

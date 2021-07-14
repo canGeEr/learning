@@ -36,7 +36,7 @@ class HistoryRouter {
     return window.location.pathname;
   }
 
-  go() {
+  forward() {
     this.history.forward();
   }
 
