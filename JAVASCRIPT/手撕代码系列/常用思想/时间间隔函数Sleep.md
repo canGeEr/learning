@@ -1,0 +1,66 @@
+# 每隔 n 秒打印 n
+
+## JS 普通版
+
+```javascript
+//setTimeout 方法
+function loop(n) {
+  let sum = 0;
+  for (let i = 1; i <= n; i++) {
+    sum += n;
+    setTimeout(() => {
+      console.log(i);
+    }, sum);
+  }
+}
+```
+
+## Promise 写
+
+```javascript
+// 第一种非递归
+function loop(n) {
+  let promise = Promise.resolve();
+  for (let i = 1; i <= n; i++) {
+    promise = promise.then(() => {
+      return new Promise((fulfill) => {
+        setTimeout(() => {
+          console.log(i);
+          fulfill();
+        }, i * 1000);
+      });
+    });
+  }
+}
+
+// 第二种递归
+function loop(n) {
+  if (n === 0) return Promise.resolve();
+
+  return loop(n - 1).then(() => {
+    return new Promise((fulfill) => {
+      setTimeout(() => {
+        console.log(n);
+        fulfill();
+      }, n * 1000);
+    });
+  });
+}
+```
+
+## async
+
+```javascript
+function sleep(delay) {
+  return new Promise((fulfilled, rejected) =>
+    setTimeout(fulfilled, delay * 1000)
+  );
+}
+
+async function loop(n) {
+  for (let i = 1; i <= n; i++) {
+    await sleep(i);
+    console.log(i);
+  }
+}
+```
