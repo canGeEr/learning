@@ -2,9 +2,9 @@
 
 ## 安装
 
-## 创建SSH
+## 创建 SSH
 
-> **.ssh** 文件夹 在 C:\Users\Administrator(默认)  
+> **.ssh** 文件夹 在 C:\Users\Administrator(默认)
 
 ```bush
 //在C盘下 git-bush
@@ -27,15 +27,16 @@ $ ssh-add ~/.ssh/id_rsa
 ssh-add -k ~/.ssh/id_rsa
 ```
 
-## github密钥创建
-登入github账号
-<img src="./github设置.png">
-选择**SSH adn GPG keys**   并 New SSH key
+## github 密钥创建
 
+登入 github 账号
+<img src="./github设置.png">
+选择**SSH adn GPG keys** 并 New SSH key
 
 ## git clone git@....
+
 注意它让你选写什么就写什么不要少(要求严格)
 
-
 ## 结束
+
 .ssh 文件会多出一个文件表示链接
