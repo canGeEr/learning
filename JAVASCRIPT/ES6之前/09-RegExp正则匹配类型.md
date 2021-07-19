@@ -41,10 +41,7 @@ RegExp作为一个构造函数可以使用new标识符创建一个正则表达�
     - multiline 布尔值 是否设置m标志
 - lastIndex 开始搜索的下一个匹配项的字符位置，从0开始算起
 - source 返回实例化传入的字符串参数
-    ```javascript
-    new RegExp('\.').source === "."
-    new RegExp('\\.').source === "\."
-    ```
+
 
 ## RegExp实例方法
 
