@@ -287,3 +287,44 @@ function receiveMessage(event) {
 
 window.addEventListener("message", receiveMessage, false);
 ```
+
+
+## 关于iframe使用postMessage踩坑
+- 永远不要在本window上调用postMessage，那只会触发本window的onmessage，并且还会报错（MDN上有注明：otherWindow.postMessage）
+- iframe.contentWindow.postMessage 等先等待 iframe 加载完成，即
+  ```javascript
+  iframe.onload = function() { // 先等其加载完成
+    iframe.contentWindow.postMessage....
+  }
+  ```
+
+
+
+一个合理的demo：    
+http://localhost:8000/page.html
+
+> （如果你是webpack开的项目，避免使用index.html，因为被webpack监听了（Dev Server）)
+
+```html
+<iframe src="http://localhost:8001/page.html"></iframe>
+<script>
+  iframe = document.getElementsByTagName('iframe')[0]
+  iframe.onload = function() {
+    iframe.contentWindow.postMessage(..., 'localhost:8001')
+  }
+  window.addEventListener('message', function(e) {
+    console.log('8000接受到的消息', e.data)
+  })
+</script>
+```
+
+http://localhost:8001/page.html
+
+```html
+<script>
+  window.addEventListener('message', function(e) {
+    console.log('8001接受到的消息', e.data)
+    e.source.postMessage(..., 'localhost:8000')
+  })
+</script>
+```
