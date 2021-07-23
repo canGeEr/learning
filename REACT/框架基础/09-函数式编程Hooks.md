@@ -44,11 +44,11 @@ Hooks 的 React 组件是函数，无法通过实例保存状态，那么需要�
   - 组件卸载时，将保存的清楚函数执行！
 
 - useEffect 如何实现：
-  - state 依赖 props （getDerivedStateFromProps的功能）
-  - 优化新能，减少回调函数的执行（shouldComponentUpdate的作用）
-  - 更新渲染完成之前记录DOM的位置，即getSnapshotBeforeUpdate （useLayoutEffect 可以做到）
-    
-这两个功能都依赖于useEffect的第二个参数，第二个参数是一个数组，我们称其为**浅对比优化数组**，当然它有一个默认值：null。   
+  - state 依赖 props （getDerivedStateFromProps 的功能）
+  - 优化新能，减少回调函数的执行（shouldComponentUpdate 的作用）
+  - 更新渲染完成之前记录 DOM 的位置，即 getSnapshotBeforeUpdate （useLayoutEffect 可以做到）
+
+这两个功能都依赖于 useEffect 的第二个参数，第二个参数是一个数组，我们称其为**浅对比优化数组**，当然它有一个默认值：null。  
 原理：
 
 - 当第一执行完成函数之后，保存**浅对比优化数组**
@@ -69,7 +69,7 @@ useEffect(() => {
 - 即当 ChildHooks 触发自己的状态更新的时候，自动的重新执上层函数或者组件函数
 - 由于上层函数本身包含 ChildHooks 的调用，这样就自然的没有破坏 Hooks 的规则
 
-> 前面说过，不要使用**嵌套函数**在React中，意思是，不要在useEffect等内置的Hooks函数，传入调用其它Hooks的函数
+> 前面说过，不要使用**嵌套函数**在 React 中，意思是，不要在 useEffect 等内置的 Hooks 函数，传入调用其它 Hooks 的函数
 
 ```javascript
 const Index = () => {
@@ -107,28 +107,30 @@ const Index = () => {
 };
 ```
 
-## Hooks的其它API
+## Hooks 的其它 API
 
 - useCallback 是能够缓存函数的（返回第一次记忆的函数对象），用于性能优化
 
-    ```javascript
-    const oldFun = useCallback(() => {
-      console.log('这个方法并没有传入新的值绑定');
-    }, []);
+  ```javascript
+  const oldFun = useCallback(() => {
+    console.log("这个方法并没有传入新的值绑定");
+  }, []);
 
-    return (
-      <MyCom value={oldFun} /> //该组件的 oldFun 一直不变，降低了每次绑定新的回调函数的开销
-    )
-    ```
-- useMemo 返回一个记忆值，和useCallback区别在于返回的是什么，作用基本相同（比如创建的一个对象，如果每次组件函数更新，对象都重新创建再传给子组件的props，再次有触发子组件的更新）
+  return (
+    <MyCom value={oldFun} /> //该组件的 oldFun 一直不变，降低了每次绑定新的回调函数的开销
+  );
+  ```
 
-- useRef 也是会缓存 ref，在react函数中尽量的使用use，因为能有缓存效果
+- useMemo 返回一个记忆值，和 useCallback 区别在于返回的是什么，作用基本相同（比如创建的一个对象，如果每次组件函数更新，对象都重新创建再传给子组件的 props，再次有触发子组件的更新）
 
-> useMemo、 useCallback 和 React.memo搭配使用都是可以的
+- useRef 也是会缓存 ref，在 react 函数中尽量的使用 use，因为能有缓存效果
 
+> useMemo、 useCallback 和 React.memo 搭配使用都是可以的
 
-## useMemo和useCallback解决Hooks性能问题
-想象一个场景，我们需要渲染当前的时间到页面，但是单纯的获取时间无法格式化，因此我们有一个方法叫做formatDate，格式化时间函数（这个函数由于某些原因无法抽离）
+## useMemo 和 useCallback 解决 Hooks 性能问题
+
+想象一个场景，我们需要渲染当前的时间到页面，但是单纯的获取时间无法格式化，因此我们有一个方法叫做 formatDate，格式化时间函数（这个函数由于某些原因无法抽离）
+
 ```javascript
 export default function Index() {
   const formatDate = function() {
@@ -139,8 +141,10 @@ export default function Index() {
   )
 }
 ```
-可是，如果你熟悉Hooks，你就知道Index每次更新重新渲染，就会生成新的一个函数对象formatDate，即使formatDate和渲染逻辑无关（它本身就不需要改变）。
+
+可是，如果你熟悉 Hooks，你就知道 Index 每次更新重新渲染，就会生成新的一个函数对象 formatDate，即使 formatDate 和渲染逻辑无关（它本身就不需要改变）。
 为了考虑性能问题：
+
 ```javascript
 export default function Index() {
   const formatDate = useCallback(function () {
@@ -151,9 +155,11 @@ export default function Index() {
   )
 }
 ```
-useCallback传入只会，会记忆函数（其实也就是外层作用域保存该函数，即使函数执行完成不会丢失），当再次执行该函数组件时，useCallback()会返回第一次的值，当然如果useCallback需要重新计算的话，可以传递依赖数组deps，依赖数组进行浅对比，不同则重新计算记忆函数。
 
-useCallback是记忆传入的函数，那么useMemo是记忆传入参数返回的值，同样也有依赖数组：
+useCallback 传入只会，会记忆函数（其实也就是外层作用域保存该函数，即使函数执行完成不会丢失），当再次执行该函数组件时，useCallback()会返回第一次的值，当然如果 useCallback 需要重新计算的话，可以传递依赖数组 deps，依赖数组进行浅对比，不同则重新计算记忆函数。
+
+useCallback 是记忆传入的函数，那么 useMemo 是记忆传入参数返回的值，同样也有依赖数组：
+
 ```javascript
 export default function Index() {
   const formatDate = useMemo(function () {
@@ -169,10 +175,10 @@ export default function Index() {
 
 useCallback(fun) 等效于 useMemo(() => fun)
 
-
 ## useCallback 和 useMemo 涉及的旧值问题
 
 这里就会涉及到旧值问题：
+
 ```javascript
 export default function Index() {
   const [state, setState] = useState(0)
@@ -188,6 +194,6 @@ export default function Index() {
   )
 }
 ```
-你点击按钮会惊讶的发现打印的值一直是0，但是Dom显示的state的值一直在增加！
-setState拥有和useCallback一样的功能，它被保存在外部作用域，并且重新执行时返回旧值！但是state则不一样，它每次setState函数执行都会重新加载组件函数，产生新的值（毕竟我们更新状态，就拿到最新的值）
 
+你点击按钮会惊讶的发现打印的值一直是 0，但是 Dom 显示的 state 的值一直在增加！
+setState 拥有和 useCallback 一样的功能，它被保存在外部作用域，并且重新执行时返回旧值！但是 state 则不一样，它每次 setState 函数执行都会重新加载组件函数，产生新的值（毕竟我们更新状态，就拿到最新的值）

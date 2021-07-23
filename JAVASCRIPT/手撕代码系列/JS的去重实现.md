@@ -38,9 +38,9 @@ function distinct(arr) {
 function distinct(arr) {
   let object = {};
   for (let value of arr) {
-    if (!(value in object)) object[value] = value;
+    if (!(value in object)) object[value] = true;
   }
-  return Object.value(object);
+  return Object.keys(object);
 }
 
 //使用Map数据结构 支持各数据类型

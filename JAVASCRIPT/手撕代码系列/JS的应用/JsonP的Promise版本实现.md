@@ -9,7 +9,7 @@ function jsonp({ url, params, callback }) {
     script.src = serialize(url, { ...params, callback });
     window[callback] = function (data) {
       fulfill(data);
-      document.body.appendChild(script);
+      document.body.removeChild(script);
     };
     document.body.appendChild(script);
   });
