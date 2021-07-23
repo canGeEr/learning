@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Html</title>
+</head>
+<body>
+  <h1>Page Html 8001</h1>
+  <!-- <iframe src="./page copy.html" frameborder="0"></iframe> -->
+  <script>
+    window.addEventListener('message', function(e) {
+      console.log('8001页面听到了', e)
+      e.source.postMessage('我爱你8000', 'http://localhost:8000')
+    })
+    window.onload = function() {
+      window.self.postMessage('我爱你8001，自己发送的', 'http://localhost:8001')
+    }
+
+  </script>
+</body>
+</html>

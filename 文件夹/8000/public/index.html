@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Webpack Server Template</title>
+</head>
+<body>
+  <img src="http://server:8080" alt="">
+  <video autoplay id="audio" controls="controls" width="700px" height="400px" src="./prompt.mp3">sdads</video>
+  <h1>音频</h1>
+
+  <button id="play">播放</button>
+  <script>
+    fetch('http://localhost:8080', {
+      method: 'get',
+      credentials: 'include'
+    }).then(res => {
+      console.log(res)
+    })
+  </script>
+</body>
+</html>
