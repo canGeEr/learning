@@ -87,3 +87,18 @@ export const CP: React.FC<ComponentProps> = (props) => {
 asyncProps 一般情况下会有问题，最好
 const asyncProps: ComponentProps = {}
 ```
+
+> 封装在内部的所有可以被外部访问的数据，都需要导出它的类型
+
+
+
+
+
+
+
+
+
+
+
+
+
