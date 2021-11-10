@@ -23,7 +23,7 @@
 
 > 获取 iframe 的 DOM 只是 Iframe DOM 而已，那么如何访问 iframe 内部的的 window 呢? **iframe.contentWindow**
 
-我们可以在当前页面通过 window.iframes 包含所有子 iframe 的 window （**contentWindow**）对象的数组引用，两种访问具体 iframe 的方式
+我们可以在当前页面通过 window.frames 包含所有子 iframe 的 window （**contentWindow**）对象的数组引用，两种访问具体 iframe 的方式
 
 - window.frames[index]
 - window.frames[iframeName] 通过框架名称获取
@@ -324,7 +324,7 @@ http://localhost:8001/page.html
 <script>
   window.addEventListener('message', function(e) {
     console.log('8001接受到的消息', e.data)
-    e.source.postMessage(..., 'localhost:8000')
+    e.source.postMessage(..., 'localhost:8001')
   })
 </script>
 ```

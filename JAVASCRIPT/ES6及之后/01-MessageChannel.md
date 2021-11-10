@@ -35,6 +35,7 @@ localhost:3000/page_one.html
 <html>
   <body>
     <p></p>
+    <iframe src="localhost:8000/page_two.html"></iframe>
   </body>
   <script>
     var channel = new MessageChannel();
