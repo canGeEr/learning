@@ -5,7 +5,7 @@ const Index = {
   instanceof(resurce, classConstructor) {
     const property = classConstructor.prototype;
     while (resurce) {
-      resurce = Object.getPrototypeOf(resurce);
+      resurce = Object.getPrototypeOf(resurce); // Reflect.getPrototypeOf
       if (resurce === property) return true;
     }
     return false;
