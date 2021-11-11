@@ -136,7 +136,7 @@ httpRequest.setRequestHeader(header, value); //header属性的名称, value属�
   - **arraybuffer** response 是一个包含二进制数据的 JavaScript ArrayBuffer
   - **blob**  包含二进制数据的的 Blob 对象
   - **document** HTML Document 或者 XML XML Documnet
-  - **json ** 返回JSON对象，就不需要和什么都没设置一样需要JSON.parse处理
+  - **json** 返回JSON对象，就不需要和什么都没设置一样需要JSON.parse处理
   - **text** DOMString 对象表示的文本
   - **ms-stream** 是下载流的一部分；此响应类型仅允许下载请求，并且仅受 Internet Explorer 支持
 
