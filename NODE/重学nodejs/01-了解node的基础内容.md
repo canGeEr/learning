@@ -95,7 +95,7 @@ npm的下载或者上传资源的服务器在国外，速度相当缓慢，我�
 
 - npm直接配置
     ```bash
-    npm config set registry [https://registry.npm.taobao.org
+    npm config set registry https://registry.npm.taobao.org
     ```
 
 - 安装cnpm(不推荐，一般一些项目的初始化默认npm,无法进行加速)
