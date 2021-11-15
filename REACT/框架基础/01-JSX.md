@@ -106,12 +106,12 @@ React的组件的特殊之处在于：
 
     ```javascript
     const components = {
-      top: 'Top', //Top组件
-      bottom: 'Bottom' //Bottom组件
+      top: Top, //Top组件
+      bottom: Bottom //Bottom组件
     }
-    const prototypeName = components.top
-    <components.prototypeName /> //只要prototypeName属性的值变化了，那么这个组件就变了
+    <components.top /> //只要prototypeName属性的值变化了，那么这个组件就变了
     ```
+    查询到底的变量一定要是一个函数或者class类（它本身其实也是函数）
 
 ## JSX需要注意的几个地方
 
