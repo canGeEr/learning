@@ -2,7 +2,7 @@
 
 ## 创建
 1. npm install create-reaact-app -g //全局安装
-2. 在要创建项目的目录下 create-reaact-app + 项目名
+2. 在要创建项目的目录下 create-react-app + 项目名
 3. cd 项目名 => npm start(npm run dev 不是启动方式)
 
 ## 路径别名
