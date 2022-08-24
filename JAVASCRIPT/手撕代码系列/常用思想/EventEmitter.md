@@ -8,73 +8,114 @@
 
 ## 实现
 
-```javascript
-class EventEmitter {
-  events;
-  constructor() {
-    this.events = {};
-  }
+```typescript
+type Registry = [number, () => void];
 
-  on(eventType, callback) {
-    if (!(eventType in this.events)) {
-      this.events[eventType] = [];
-    }
-    this.events[eventType].push(callback);
-  }
+type Callable = Map<number, Function>;
 
-  off(eventType, callback) {
-    const currentEvents = this.events[eventType];
-    if (currentEvents) {
-      for (let [key, value] of currentEvents.entries()) {
-        if (value === callback || value.fn === callback) {
-          currentEvents.splice(key, 1);
-          break;
-        }
-      }
-    }
-  }
+type Subscriber = Map<string, Callable>;
 
-  emit(eventType, ...args) {
-    if (eventType in this.events) {
-      const events = this.events[eventType].slice(0); // 保证执行一遍
-      events.forEach((callback) => {
-        callback(...args);
-      });
-    }
-  }
-
-  once(eventType, callback) {
-    const realCallback = (...args) => {
-      callback(...args);
-      this.off(eventType, realCallback);
-    };
-    realCallback.fn = callback;
-    this.on(eventType, realCallback);
-  }
+export interface IEventBus {
+  // 发布
+  emit<T>(event: string, arg?: T): void;
+  // 订阅
+  on(event: string, callback: Function): Registry;
+  // 取消订阅
+  off(event: string, key?: Function | number): void;
+  // 订阅一次
+  once(event: string, callback: Function): void;
 }
 
-const events = new EventEmitter();
+export class EventBus implements IEventBus {
+  // 绑定函数事件的key
+  private static nextId = 0;
+  private static instance?: EventBus = undefined;
 
-let com = function (...args) {
-  console.log("点击发生", args);
-};
+  // 单利模式
+  public static getInstance(): EventBus {
+    if (this.instance === undefined) {
+      this.instance = new EventBus();
+    }
 
-events.on("click", com);
+    return this.instance;
+  }
 
-let common = function (...args) {
-  console.log("点击发生，once", args);
-};
+  // 用Map是为了方便删除
+  private subscribers: Subscriber;
 
-events.once("click", common);
+  private constructor() {
+    this.subscribers = new Map();
+  }
 
-events.off("click", common);
+  public emit<T>(event: string, ...arg: T []): void {
+    const subscriber = this.subscribers.get(event);
 
-events.on("click", com);
+    if (!subscriber) return;
 
-setTimeout(() => {
-  console.log(events.events["click"].length);
-  events.off("click", com);
-  events.emit("click", 1, 2);
-  console.log(events);
-}, 1000);
+    subscriber.forEach(fun => fun(...arg));
+  }
+
+  public on(event: string, callback: Function): Registry {
+    const id = this.getNextId();
+    let eventSubscribers = this.subscribers.get(event);
+    // 不存在则初始化
+    if (!eventSubscribers) {
+      eventSubscribers = new Map();
+      this.subscribers.set(event, eventSubscribers);
+    }
+    eventSubscribers.set(id, callback);
+
+    return [
+      id,
+      // 取消订阅，注意这里用箭头函数不会改变this的指向
+      () => {
+        this.off(event, id);
+      },
+    ];
+  }
+
+  public off(event: string, key?: Function | number) {
+    // 全部清除
+    if (!key) {
+      this.subscribers.delete(event);
+      return;
+    }
+    const eventSubscribers = this.subscribers.get(event);
+    // 清除单个绑定函数
+    if (!eventSubscribers) return;
+    if (typeof key === 'number') {
+      const id = key;
+      eventSubscribers?.delete(id);
+    }
+    if (typeof key === 'function') {
+      const callback = key;
+      for (const [id, idCallback] of eventSubscribers) {
+        // 找到了直接终止迭代
+        if (idCallback === callback) {
+          eventSubscribers.delete(id);
+          break;
+        };
+      }
+    }
+    // 如果事件所有函数都被解除绑定，那么清除事件
+    if (!eventSubscribers.size) {
+      this.subscribers.delete(event);
+    }
+    return;
+  }
+
+  public once(event: string, callback: Function) {
+    const innerCallback = () => {
+      callback();
+      // 调用之后立马清除
+      this.off(event, innerCallback);
+    };
+    this.on(event, innerCallback);
+    return;
+  }
+
+  private getNextId(): number {
+    return EventBus.nextId += 1;
+  }
+}
 ```
