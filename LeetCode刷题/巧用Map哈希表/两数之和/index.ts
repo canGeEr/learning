@@ -10,6 +10,10 @@ enum CollectionOperate {
 }
 
 function operateArrayCollection<T = any>(array1: T[], array2: T [], operate: CollectionOperate) {
+  if(operate === CollectionOperate.Difference) {
+    return operateArrayCollectionByDifference(array1, array2)
+  }
+  
   // 遍历所有数组，存储每个元素的出现次数
   const map = new Map<T, number>()
   for(const array of [array1, array2]) {
@@ -25,7 +29,6 @@ function operateArrayCollection<T = any>(array1: T[], array2: T [], operate: Col
     for(const [value, lastTimes] of map.entries()) {
       if(lastTimes >= 2) target.push(value)
     }
-    console.log(map)
     return target
   }
   // 并集就是所有出现的value
@@ -39,9 +42,6 @@ function operateArrayCollection<T = any>(array1: T[], array2: T [], operate: Col
       if(lastTimes === 1) target.push(value)
     }
     return target
-  }
-  if(operate === CollectionOperate.Difference) {
-    return operateArrayCollectionByDifference(array1, array2)
   }
 }
 
