@@ -3,12 +3,25 @@
 ## call
 
 ```javascript
-Function.prototype.call = function (context, ...args) {
-  if (typeof this !== "function") throw "非函数对象调用错误";
-  const tempName = Symbol("callFun");
-  context[tempName] = this;
-  const result = context[tempName](...args);
-  delete context[tempName];
+// 真正的call的length = 1
+Function.prototype.call = function (instance, ...args) {
+  // 非严格模式下
+  if (instance === null || instance === undefined) {
+    instance = window;
+  } else if (typeof instance !== "object" && typeof instance !== "function") {
+    // 非对象的时候需要处理
+    const Constructor = getInstanceConstructor(instance);
+    instance = new Constructor(instance);
+  }
+
+  const callback = this;
+  // 确保完全不会覆盖其他属性
+  const tempKey = Symbol("temp");
+  instance[tempKey] = callback;
+  const result = instance[tempKey](...args);
+  // 删除临时key
+  delete instance[tempKey];
+  // 注意需要返回结果
   return result;
 };
 ```
@@ -16,28 +29,19 @@ Function.prototype.call = function (context, ...args) {
 ## apply
 
 ```javascript
-Function.prototype.aply = function (context, args = []) {
-  if (typeof this !== "function") throw "非函数对象调用错误";
-  const tempName = Symbol("callFun");
-  context[tempName] = this;
-  const result = context[tempName](...args);
-  delete context[tempName];
-  return result;
+// 真正的call的length = 2
+Function.prototype.apply = function (instance, args) {
+  return this.call(instance, ...(args || []));
 };
 ```
 
 ## bind
 
 ```javascript
-Function.prototype.call = function (context, ...args) {
-  const callback = this;
-  return function (...arg1) {
-    if (typeof this !== "function") throw "非函数对象调用错误";
-    const tempName = Symbol("callFun");
-    context[tempName] = callback;
-    const result = context[tempName](...args, ...arg1);
-    delete context[tempName];
-    return result;
+Function.prototype.call = function (instance, ...initArgs) {
+  const that = this;
+  return function (...args) {
+    return that.call(instance, ...[].concat(initArgs, args));
   };
 };
 ```
