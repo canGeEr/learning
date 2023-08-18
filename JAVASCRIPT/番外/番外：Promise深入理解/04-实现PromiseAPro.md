@@ -133,7 +133,7 @@ function resolvePromise(dependentPromise, dependant, fulfill, reject) {
 // promises-aplus-tests测试钩子
 Promise.defer = Promise.deferred = function () {
   let defer = {};
-  defer.promise = new PromiseAPro((resolve, reject) => {
+  defer.promise = new Promise((resolve, reject) => {
     defer.resolve = resolve;
     defer.reject = reject;
   });
