@@ -82,24 +82,34 @@ class Promise {
   }
 }
 
-function resolvePromise(promise, x, fulfill, reject) {
-  // 防止循环等待
-  if (promise === x) {
-    return reject(new TypeError("Chaining cycle"));
+/**
+ *
+ * @param {* Promise} dependentPromise 依赖者
+ * @param {* Promise} dependant 被依赖者
+ * @param {* function} fulfill
+ * @param {* function} reject
+ * @returns
+ */
+function resolvePromise(dependentPromise, dependant, fulfill, reject) {
+  // 避免依赖循环
+  if (dependentPromise === dependant) {
+    return reject(new TypeError("promise dependency circle"));
   }
-  if (isObject(x)) {
-    // 这里需要used的原因是x可能是thenables，测试用例会确认fulfill或者reject调用测试
-    let used = false;
-    let then = null;
+  // 注意这可能是Thenables，
+  if (isObject(dependant)) {
+    // 注意这里Thenables的fulfill, reject不能被重复调用，因此需要使用used
+    let then = null,
+      used = false;
     try {
-      then = x.then;
+      then = dependant.then;
       if (typeof then === "function") {
         then.call(
-          x,
+          dependant,
           (res) => {
             if (used) return;
             used = true;
-            resolvePromise(promise, res, fulfill, reject);
+            // 递归判读dependant返回的是不是promise
+            resolvePromise(dependentPromise, res, fulfill, reject);
           },
           (error) => {
             if (used) return;
@@ -108,20 +118,20 @@ function resolvePromise(promise, x, fulfill, reject) {
           }
         );
       } else {
-        fulfill(x);
+        fulfill(dependant);
       }
     } catch (error) {
       if (used) return;
       used = true;
-      return reject(error);
+      reject(error);
     }
   } else {
-    fulfill(x);
+    fulfill(dependant);
   }
 }
 
 // promises-aplus-tests测试钩子
-PromiseAPro.defer = PromiseAPro.deferred = function () {
+Promise.defer = Promise.deferred = function () {
   let defer = {};
   defer.promise = new PromiseAPro((resolve, reject) => {
     defer.resolve = resolve;
@@ -130,7 +140,7 @@ PromiseAPro.defer = PromiseAPro.deferred = function () {
   return defer;
 };
 
-module.exports = PromiseAPro;
+module.exports = Promise;
 ```
 
 ## 测试
