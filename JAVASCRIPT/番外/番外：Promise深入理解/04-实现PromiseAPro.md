@@ -1,6 +1,14 @@
 # 手写 PromiseAPro
 
 ```javascript
+const { isObject } = require("./../utils/isObject");
+
+/**
+ * 1. promise的回调是同步执行的
+ * 2. promise的一旦resolve或者reject之后，都不会再次改变，三种状态 pending、fulfilled、rejected
+ * 3. promise
+ * 现在所谓的promise不考虑fulfill调用时传递promise的情况
+ */
 const PENDING = "pending",
   FULFILLED = "fulfilled",
   REJECTED = "rejected";
@@ -80,6 +88,137 @@ class Promise {
     });
     return nextPromise;
   }
+  /**
+   *
+   * @param {*} onError
+   * @returns
+   */
+  catch(onError) {
+    return this.then(undefined, onError);
+  }
+  /**
+   * 考点，不管成功或者失败都会执行，并且不带参数
+   * @param {*} callback
+   * @returns
+   */
+  finally(callback) {
+    const noParams = () => callback();
+    return this.then(noParams, noParams);
+  }
+  // 注意，all也接受可迭代
+  /**
+   *  考点，promises可以是可迭代对象，空数组也需要返回
+   * @param {Promise []} promises
+   */
+  static all(promises) {
+    // 这里也需要处理非promise类型
+    promises = Array.from(promises).map((promise) => Promise.resolve(promise));
+    return new Promise((fulfill, reject) => {
+      const length = promises.length;
+      if (!length) {
+        return fulfill([]);
+      }
+      let successCount = 0;
+      const result = [];
+      // 这里必须记录index，因为then不是按照顺序调用的
+      promises.forEach((promise, index) => {
+        promise.then(
+          (res) => {
+            result[index] = res;
+            successCount++;
+            successCount === length && fulfill(result);
+          },
+          (error) => {
+            reject(error);
+          }
+        );
+      });
+    });
+  }
+  /**
+   *
+   * @param {*} promises
+   * @returns 一直等到所有的promise完成
+   */
+  static allSettled(promises) {
+    // 这里也需要处理非promise类型
+    promises = Array.from(promises).map((promise) => Promise.resolve(promise));
+    return new Promise((fulfill) => {
+      const length = promises.length;
+      if (!length) {
+        return fulfill([]);
+      }
+      let successCount = 0;
+      const result = [];
+      promises.forEach((promise, index) => {
+        promise.then(
+          (res) => {
+            result[index] = {
+              status: FULFILLED,
+              value: res,
+            };
+            successCount++;
+            length === successCount && fulfill(result);
+          },
+          (error) => {
+            result[index] = {
+              status: REJECTED,
+              reason: error,
+            };
+            successCount++;
+            length === successCount && fulfill(result);
+          }
+        );
+      });
+    });
+  }
+
+  /**
+   *
+   * @param {*} promises
+   * @returns 任意一个成功就成功，全部失败才失败
+   */
+  static any(promises) {
+    // 这里也需要处理非promise类型
+    promises = Array.from(promises).map((promise) => Promise.resolve(promise));
+    return new Promise((fulfill, reject) => {
+      const length = promises.length;
+      // 注意这里是拒绝
+      if (!length) {
+        return reject(new AggregateError([]));
+      }
+      let successCount = 0;
+      const result = [];
+      // 这里必须记录index，因为then不是按照顺序调用的
+      promises.forEach((promise, index) => {
+        promise.then(
+          (res) => {
+            fulfill(res);
+          },
+          (error) => {
+            result[index] = error;
+            successCount++;
+            successCount === length && reject(new AggregateError(result));
+          }
+        );
+      });
+    });
+  }
+
+  /**
+   *
+   * @param {*} promises
+   * @returns 依据最先返回的状态
+   */
+  static race(promises) {
+    // 这里也需要处理非promise类型
+    promises = Array.from(promises).map((promise) => Promise.resolve(promise));
+    return new Promise((fulfill, reject) => {
+      for (let promise of promises) {
+        promise.then(fulfill, reject);
+      }
+    });
+  }
 }
 
 /**
@@ -130,9 +269,23 @@ function resolvePromise(dependentPromise, dependant, fulfill, reject) {
   }
 }
 
-// promises-aplus-tests测试钩子
-Promise.defer = Promise.deferred = function () {
-  let defer = {};
+// const promise = new Promise((fulfill, reject) => {
+//   setTimeout(reject, 1000);
+// });
+
+// promise.then(
+//   (res) => {
+//     console.log("这里是正确结果", res);
+//   },
+//   (error) => {
+//     console.log("这里是错误结果", error);
+//   }
+// );
+
+// console.log("这里promise代码层面之后");
+
+Promise.deferred = Promise.defer = function () {
+  var defer = {};
   defer.promise = new Promise((resolve, reject) => {
     defer.resolve = resolve;
     defer.reject = reject;
