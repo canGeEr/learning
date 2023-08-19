@@ -219,6 +219,22 @@ class Promise {
       }
     });
   }
+
+  // 注意thenables
+  static resolve(value) {
+    if (value instanceof Promise) return Promise;
+    if (value?.then && typeof value.then === "function") {
+      return new Promise(value.then);
+    }
+    return new Promise((fulfill) => fulfill(value));
+  }
+
+  // 和resolve不同，一定会返回一个新的promise，并不会重用
+  static reject(value) {
+    return new Promise((fulfill, reject) => {
+      reject(value);
+    });
+  }
 }
 
 /**
