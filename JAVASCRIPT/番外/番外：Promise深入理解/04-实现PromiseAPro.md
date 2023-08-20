@@ -102,8 +102,16 @@ class Promise {
    * @returns
    */
   finally(callback) {
-    const noParams = () => callback();
-    return this.then(noParams, noParams);
+    return this.then(
+      (res) => {
+        callback();
+        return res;
+      },
+      (error) => {
+        callback();
+        throw error;
+      }
+    );
   }
   // 注意，all也接受可迭代
   /**
