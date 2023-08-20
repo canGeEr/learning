@@ -8,12 +8,9 @@ Function.prototype.call = function (instance, ...args) {
   // 非严格模式下
   if (instance === null || instance === undefined) {
     instance = window;
-  } else if (typeof instance !== "object" && typeof instance !== "function") {
-    // 非对象的时候需要处理
-    const Constructor = getInstanceConstructor(instance);
-    instance = new Constructor(instance);
   }
-
+  // 非对象的时候需要处理
+  instance = Object(instance);
   const callback = this;
   // 确保完全不会覆盖其他属性
   const tempKey = Symbol("temp");
