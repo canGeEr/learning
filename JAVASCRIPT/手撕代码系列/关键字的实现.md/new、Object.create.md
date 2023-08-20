@@ -16,15 +16,12 @@
 
 ```javascript
 Object.create = function (prototype, descriptors) {
-  if (!isObject()) {
+  if (prototype === null) return Object.setPrototypeOf({}, null);
+  if (!isObject(prototype)) {
     throw new TypeError("Object prototype may only be an Object or null");
   }
-  // 判断是否为object
-  if (!instance) {
-    return Object.setPrototypeOf({}, null);
-  }
   const ConstructorFun = new Function();
-  ConstructorFun.prototype = instance;
+  ConstructorFun.prototype = prototype;
   ConstructorFun.prototype.constructor = ConstructorFun;
   const result = new ConstructorFun();
   delete ConstructorFun.prototype.constructor;
