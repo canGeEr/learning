@@ -264,6 +264,7 @@ function resolvePromise(dependentPromise, dependant, fulfill, reject) {
     let then = null,
       used = false;
     try {
+      // then可能是个get方法
       then = dependant.then;
       if (typeof then === "function") {
         then.call(
