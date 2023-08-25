@@ -9,113 +9,58 @@
 ## 实现
 
 ```typescript
-type Registry = [number, () => void];
-
-type Callable = Map<number, Function>;
-
-type Subscriber = Map<string, Callable>;
-
-export interface IEventBus {
-  // 发布
-  emit<T>(event: string, arg?: T): void;
-  // 订阅
-  on(event: string, callback: Function): Registry;
-  // 取消订阅
-  off(event: string, key?: Function | number): void;
-  // 订阅一次
-  once(event: string, callback: Function): void;
-}
-
-export class EventBus implements IEventBus {
-  // 绑定函数事件的key
-  private static nextId = 0;
-  private static instance?: EventBus = undefined;
-
-  // 单利模式
-  public static getInstance(): EventBus {
-    if (this.instance === undefined) {
-      this.instance = new EventBus();
-    }
-
-    return this.instance;
+class EventEmit {
+  constructor() {
+    this.cache = new Map();
   }
-
-  // 用Map是为了方便删除
-  private subscribers: Subscriber;
-
-  private constructor() {
-    this.subscribers = new Map();
+  on(name, callback) {
+    if (!this.cache.has(name)) {
+      this.cache.set(name, []);
+    }
+    this.cache.get(name).push(callback);
+    return () => this.delete(name, callback);
   }
-
-  public emit<T>(event: string, ...arg: T []): void {
-    const subscriber = this.subscribers.get(event);
-
-    if (!subscriber) return;
-
-    subscriber.forEach(fun => fun(...arg));
+  delete(name, callback) {
+    const callbackList = this.cache.get(name);
+    if (!callbackList?.length) return;
+    const callbackIndex = callbackList.find((item) => callback === item);
+    if (callbackIndex === -1) return;
+    // 替换callback位置为空
+    callbackList[callbackIndex] = undefined;
   }
-
-  public on(event: string, callback: Function): Registry {
-    const id = this.getNextId();
-    let eventSubscribers = this.subscribers.get(event);
-    // 不存在则初始化
-    if (!eventSubscribers) {
-      eventSubscribers = new Map();
-      this.subscribers.set(event, eventSubscribers);
-    }
-    eventSubscribers.set(id, callback);
-
-    return [
-      id,
-      // 取消订阅，注意这里用箭头函数不会改变this的指向
-      () => {
-        this.off(event, id);
-      },
-    ];
-  }
-
-  public off(event: string, key?: Function | number) {
-    // 全部清除
-    if (!key) {
-      this.subscribers.delete(event);
-      return;
-    }
-    const eventSubscribers = this.subscribers.get(event);
-    // 清除单个绑定函数
-    if (!eventSubscribers) return;
-    if (typeof key === 'number') {
-      const id = key;
-      eventSubscribers?.delete(id);
-    }
-    if (typeof key === 'function') {
-      const callback = key;
-      for (const [id, idCallback] of eventSubscribers) {
-        // 找到了直接终止迭代
-        if (idCallback === callback) {
-          eventSubscribers.delete(id);
-          break;
-        };
-      }
-    }
-    // 如果事件所有函数都被解除绑定，那么清除事件
-    if (!eventSubscribers.size) {
-      this.subscribers.delete(event);
-    }
-    return;
-  }
-
-  public once(event: string, callback: Function) {
-    const innerCallback = () => {
+  once(name, callback) {
+    const clearFun = this.on(name, () => {
       callback();
-      // 调用之后立马清除
-      this.off(event, innerCallback);
-    };
-    this.on(event, innerCallback);
-    return;
+      clearFun();
+    });
+    return clearFun;
   }
-
-  private getNextId(): number {
-    return EventBus.nextId += 1;
+  emit(name) {
+    const callbackList = this.cache.get(name);
+    if (!callbackList?.length) return;
+    // 注意，可能边执行的时候边背删除了
+    callbackList.forEach((callback) => callback?.());
+    this.cache.set(name, callbackList.filter(Boolean));
   }
 }
+
+const eventEmit = new EventEmit();
+
+const clearFirst = eventEmit.on("fuck", () => {
+  console.log("first1");
+});
+
+eventEmit.once("fuck", () => {
+  console.log("first once");
+  clearFirst();
+  clearSecond();
+});
+
+const clearSecond = eventEmit.on("fuck", () => {
+  console.log("first2");
+});
+
+eventEmit.emit("fuck");
+
+eventEmit.emit("fuck");
 ```
