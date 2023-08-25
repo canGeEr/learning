@@ -9,7 +9,7 @@
 ## 实现
 
 ```typescript
-class EventEmit {
+class EventEmitter {
   constructor() {
     this.cache = new Map();
   }
@@ -44,7 +44,7 @@ class EventEmit {
   }
 }
 
-const eventEmit = new EventEmit();
+const eventEmit = new EventEmitter();
 
 const clearFirst = eventEmit.on("fuck", () => {
   console.log("first1");
