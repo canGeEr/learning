@@ -1,3 +1,4 @@
+const sleep = require("./../utils/sleep");
 class AsyncQueue {
   constructor() {
     this.cache = new Map();
